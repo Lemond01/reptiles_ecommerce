@@ -1,6 +1,8 @@
 // ===== Configuración =====
-const ENVIO_GRATIS = 150;                    // Monto mínimo para el envío gratis
-const CLAVE_GUARDADO = 'repko-carrito';       // Nombre con el que se guarda en localStorage
+const ENVIO_GRATIS = 150;                    // Monto mínimo para el envío gratis (Política de envíos 4.2)
+const COSTO_ENVIO = 99;                      // Envío estándar si no se llega al mínimo (Política de envíos 4.2)
+const CLAVE_GUARDADO = 'repko-carrito';       // Nombre con el que se guarda el carrito en localStorage
+const CLAVE_PROMOCIONES = 'repko-promociones'; // Guarda true o false (solo de ejemplo, no hay servidor)
 const DURACION_AVISO = 2500;                 // Tiempo que se ve el aviso (en milisegundos)
 
 
@@ -13,6 +15,8 @@ const botonCerrar = document.querySelector('.cart__close');
 const textoEnvio = document.querySelector('.cart__shipping');
 const barraEnvio = document.querySelector('.cart__bar-fill');
 const lista = document.querySelector('.cart__list');
+const subtotalTexto = document.querySelector('.cart__subtotal');
+const envioTexto = document.querySelector('.cart__shipping-cost');
 const totalTexto = document.querySelector('.cart__total-price');
 const botonFinalizar = document.querySelector('.cart__checkout');
 const aviso = document.querySelector('.toast');
@@ -29,29 +33,71 @@ const enlacesMenu = document.querySelectorAll('.menu__link');
 const botonesFiltro = document.querySelectorAll('.filters__button');
 const textoConteo = document.querySelector('.products__count');
 
+// Ventana de confirmación del pedido
+const ventanaConfirmar = document.getElementById('confirmar-pedido');
+const resumenPiezas = document.querySelector('.confirm__pieces');
+const resumenSubtotal = document.querySelector('.confirm__subtotal');
+const resumenEnvio = document.querySelector('.confirm__shipping');
+const resumenTotal = document.querySelector('.confirm__total');
+const casillaTerminos = document.getElementById('casilla-terminos');
+const bloqueReptiles = document.getElementById('bloque-reptiles');
+const casillaReptiles = document.getElementById('casilla-reptiles');
+const casillaPromociones = document.getElementById('casilla-promociones');
+const botonVolver = document.querySelector('.confirm__back');
+const botonConfirmar = document.querySelector('.confirm__submit');
+
 
 // ===== Estado =====
-// El carrito es un arreglo de objetos: { id, nombre, precio, imagen, cantidad }
+// El carrito es un arreglo de objetos: { id, nombre, precio, imagen, categoria, cantidad }
 let carrito = cargarCarrito();
 let temporizadorAviso; // Guarda el setTimeout del aviso para poder reiniciarlo
 
 
 // ===== Utilidades =====
-// Convierte un número en texto de precio: 29.9 -> "$29.90"
+// Convierte un número en texto de precio en pesos: 2899 -> "$2,899.00"
 function formatearPrecio(numero) {
-    return '$' + numero.toFixed(2);
+    return '$' + numero.toLocaleString('es-MX', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+// Arma un producto del carrito con los datos data-* de una tarjeta
+function datosDeTarjeta(tarjeta, cantidad) {
+    const datos = tarjeta.dataset;
+    return {
+        id: datos.id,
+        nombre: datos.nombre,
+        precio: Number(datos.precio),
+        imagen: datos.imagen,
+        categoria: datos.categoria, // Sirve para saber si hay un reptil en el carrito
+        cantidad: cantidad
+    };
 }
 
 
 // ===== Guardar y cargar (localStorage) =====
 // Se usa try/catch porque localStorage puede fallar (por ejemplo, en modo privado)
 function cargarCarrito() {
+    let guardado = [];
     try {
-        const guardado = localStorage.getItem(CLAVE_GUARDADO);
-        return guardado ? JSON.parse(guardado) : [];
+        const texto = localStorage.getItem(CLAVE_GUARDADO);
+        guardado = texto ? JSON.parse(texto) : [];
     } catch (error) {
         return [];
     }
+
+    // Del carrito guardado solo usamos el id y la cantidad.
+    // El precio, nombre y categoría se toman de las tarjetas de la página,
+    // así nunca queda un precio viejo. Si el producto ya no existe o se agotó, se quita.
+    const actualizado = [];
+    guardado.forEach(function (item) {
+        const tarjeta = document.querySelector('.product-card[data-id="' + item.id + '"]');
+        if (tarjeta && tarjeta.dataset.agotado !== 'true') {
+            actualizado.push(datosDeTarjeta(tarjeta, item.cantidad));
+        }
+    });
+    return actualizado;
 }
 
 function guardarCarrito() {
@@ -160,6 +206,10 @@ function cerrarPaneles() {
 fondo.addEventListener('click', cerrarPaneles);
 
 document.addEventListener('keydown', function (evento) {
+    // Si la ventana de confirmación está abierta, Escape solo la cierra a ella
+    // (el navegador lo hace solo) y el carrito sigue abierto detrás
+    if (ventanaConfirmar.open) return;
+
     if (evento.key === 'Escape') {
         cerrarPaneles();
     }
@@ -167,7 +217,8 @@ document.addEventListener('keydown', function (evento) {
 
 
 // ===== Aviso (toast) =====
-function mostrarAviso(mensaje) {
+// duracion es opcional: si no se indica, se usa DURACION_AVISO
+function mostrarAviso(mensaje, duracion = DURACION_AVISO) {
     aviso.textContent = mensaje;
     aviso.classList.add('toast--visible');
 
@@ -175,7 +226,7 @@ function mostrarAviso(mensaje) {
     clearTimeout(temporizadorAviso);
     temporizadorAviso = setTimeout(function () {
         aviso.classList.remove('toast--visible');
-    }, DURACION_AVISO);
+    }, duracion);
 }
 
 
@@ -195,13 +246,7 @@ function anadirProducto(tarjeta) {
         // Si ya está en el carrito, solo sumamos 1
         existente.cantidad++;
     } else {
-        carrito.push({
-            id: datos.id,
-            nombre: datos.nombre,
-            precio: Number(datos.precio),
-            imagen: datos.imagen,
-            cantidad: 1
-        });
+        carrito.push(datosDeTarjeta(tarjeta, 1));
     }
 
     actualizar();
@@ -249,12 +294,62 @@ lista.addEventListener('click', function (evento) {
 });
 
 
-// ===== Finalizar compra (sin pago) =====
-botonFinalizar.addEventListener('click', function () {
+// ===== Finalizar compra: ventana de confirmación (sin pago) =====
+// "Finalizar compra" ya no vacía el carrito: primero abre la ventana <dialog>
+function abrirConfirmacion() {
+    // 1. Llenar el resumen con los totales actuales
+    const totales = calcularTotales();
+    resumenPiezas.textContent = totales.piezas;
+    resumenSubtotal.textContent = formatearPrecio(totales.subtotal);
+    resumenEnvio.textContent = totales.envio === 0 ? 'Gratis' : formatearPrecio(totales.envio);
+    resumenTotal.textContent = formatearPrecio(totales.total);
+
+    // 2. La casilla de mayoría de edad solo aparece si hay un reptil en el carrito
+    const hayReptiles = carrito.some(function (producto) {
+        return producto.categoria === 'reptiles';
+    });
+    bloqueReptiles.hidden = !hayReptiles;
+
+    // 3. Las casillas empiezan desmarcadas cada vez que se abre la ventana
+    casillaTerminos.checked = false;
+    casillaReptiles.checked = false;
+    casillaPromociones.checked = false;
+    revisarCasillas();
+
+    // 4. showModal() la abre encima de todo, con fondo oscuro (::backdrop)
+    ventanaConfirmar.showModal();
+}
+
+// "Confirmar pedido" solo se habilita si están marcadas las casillas obligatorias
+function revisarCasillas() {
+    const reptilesOk = bloqueReptiles.hidden || casillaReptiles.checked;
+    botonConfirmar.disabled = !(casillaTerminos.checked && reptilesOk);
+}
+
+function guardarPromociones(acepta) {
+    try {
+        localStorage.setItem(CLAVE_PROMOCIONES, acepta); // Se guarda "true" o "false"
+    } catch (error) {
+        // Solo es un ejemplo: si falla, no pasa nada
+    }
+}
+
+botonFinalizar.addEventListener('click', abrirConfirmacion);
+
+// Cada vez que se marca o desmarca una casilla, revisamos el botón
+ventanaConfirmar.addEventListener('change', revisarCasillas);
+
+botonVolver.addEventListener('click', function () {
+    ventanaConfirmar.close(); // Regresa al carrito, que sigue abierto
+});
+
+botonConfirmar.addEventListener('click', function () {
+    guardarPromociones(casillaPromociones.checked);
+    ventanaConfirmar.close();
     carrito = [];
     actualizar();
     cerrarCarrito();
-    mostrarAviso('¡Gracias por tu pedido! Te contactaremos para el pago y envío.');
+    mostrarAviso('¡Gracias por tu pedido! Te enviamos la confirmación por correo. (Proyecto académico: no se realiza ningún cobro).', 5000);
 });
 
 
@@ -296,8 +391,33 @@ tarjetas.forEach(function (tarjeta) {
 });
 
 
+// ===== Totales =====
+// Calcula piezas, subtotal, envío y total. La usan el carrito y la ventana de confirmación
+function calcularTotales() {
+    let subtotal = 0;
+    let piezas = 0;
+    carrito.forEach(function (producto) {
+        subtotal += producto.precio * producto.cantidad;
+        piezas += producto.cantidad;
+    });
+
+    // Envío: gratis desde ENVIO_GRATIS; si el carrito está vacío, no se cobra
+    let envio = COSTO_ENVIO;
+    if (piezas === 0 || subtotal >= ENVIO_GRATIS) {
+        envio = 0;
+    }
+
+    return {
+        piezas: piezas,
+        subtotal: subtotal,
+        envio: envio,
+        total: subtotal + envio
+    };
+}
+
+
 // ===== Actualizar todo =====
-// Dibuja la lista, calcula total, contador y barra de envío, y guarda el carrito
+// Dibuja la lista, calcula totales, contador y barra de envío, y guarda el carrito
 function actualizar() {
     // 1. Dibujar la lista de productos
     lista.innerHTML = carrito.map(function (producto) {
@@ -321,28 +441,33 @@ function actualizar() {
             </li>`;
     }).join('');
 
-    // 2. Calcular el total y el número de piezas
-    let total = 0;
-    let piezas = 0;
-    carrito.forEach(function (producto) {
-        total += producto.precio * producto.cantidad;
-        piezas += producto.cantidad;
-    });
+    // 2. Subtotal, envío y total
+    const totales = calcularTotales();
+    const piezas = totales.piezas;
+    const subtotal = totales.subtotal;
 
-    totalTexto.textContent = formatearPrecio(total);
+    subtotalTexto.textContent = formatearPrecio(subtotal);
+    if (piezas === 0) {
+        envioTexto.textContent = '—';
+    } else if (totales.envio === 0) {
+        envioTexto.textContent = 'Gratis';
+    } else {
+        envioTexto.textContent = formatearPrecio(totales.envio);
+    }
+    totalTexto.textContent = formatearPrecio(totales.total);
 
     // 3. Contador del ícono del carrito (se oculta si está vacío)
     contador.textContent = piezas;
     contador.classList.toggle('header__count--visible', piezas > 0);
     botonCarrito.setAttribute('aria-label', 'Ver carrito (' + piezas + (piezas === 1 ? ' producto)' : ' productos)'));
 
-    // 4. Barra y texto de envío gratis
-    if (total >= ENVIO_GRATIS) {
+    // 4. Barra y texto de envío gratis (se mide con el subtotal, sin contar el envío)
+    if (subtotal >= ENVIO_GRATIS) {
         textoEnvio.textContent = '¡Tienes envío gratis!';
     } else {
-        textoEnvio.textContent = 'Te faltan ' + formatearPrecio(ENVIO_GRATIS - total) + ' para el envío gratis';
+        textoEnvio.textContent = 'Te faltan ' + formatearPrecio(ENVIO_GRATIS - subtotal) + ' para el envío gratis';
     }
-    const porcentaje = Math.min(total / ENVIO_GRATIS * 100, 100);
+    const porcentaje = Math.min(subtotal / ENVIO_GRATIS * 100, 100);
     barraEnvio.style.width = porcentaje + '%';
 
     // 5. Sin productos no se puede finalizar la compra

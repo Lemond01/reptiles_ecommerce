@@ -235,6 +235,28 @@ button{
     }
 }
 
+// Header de legal.html: enlace a la izquierda y logo al centro
+.header--legal{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+}
+
+.header__back{
+    color: $blanco;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover{
+        text-decoration: underline;
+    }
+}
+
+.header__home{
+    display: block;
+}
+
 /* ===== Hero ===== */
 .hero{
     padding: 120px 24px;
@@ -450,6 +472,17 @@ button{
         color: $texto-suave;
     }
 
+    &__legal{
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: $texto-suave;
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
+    }
+
     &__price{
         @extend %price;
         font-size: 20px;
@@ -628,6 +661,13 @@ button{
         border-top: 1px solid $borde;
     }
 
+    &__row{
+        @include flex-between;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
     &__total{
         @include flex-between;
         margin-bottom: 16px;
@@ -744,6 +784,11 @@ button{
         padding: 0 24px 20px;
         color: $texto-suave;
         line-height: 1.5;
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
     }
 }
 
@@ -808,6 +853,324 @@ button{
         font-size: 14px;
         opacity: 0.8;
     }
+
+    &__legal{
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid rgba($blanco, 0.2);
+        font-size: 13px;
+        text-align: center;
+        opacity: 0.8;
+
+        a{
+            color: $blanco;
+        }
+    }
+}
+
+/* ===== Aviso de almacenamiento ===== */
+.storage-notice{
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: min(720px, calc(100% - 32px));
+    padding: 14px 16px 14px 24px;
+    border-radius: $radio;
+    background-color: $texto;
+    color: $blanco;
+    font-size: 14px;
+    box-shadow: $sombra;
+    transform: translateX(-50%);
+
+    &[hidden]{
+        display: none;
+    }
+
+    &__text a{
+        color: $blanco;
+    }
+
+    &__button{
+        @extend %button-pill;
+        flex-shrink: 0;
+        padding: 10px 22px;
+    }
+}
+
+/* ===== Ventana de confirmacion ===== */
+.confirm{
+    width: min(520px, calc(100% - 32px));
+    max-height: calc(100% - 32px);
+    margin: auto;
+    padding: 28px;
+    border: none;
+    border-radius: $radio;
+    background-color: $blanco;
+    color: $texto;
+    box-shadow: $sombra;
+
+    &::backdrop{
+        background-color: rgba($texto, 0.45);
+    }
+
+    &__title{
+        @extend %panel-title;
+        margin-bottom: 16px;
+    }
+
+    &__summary{
+        margin-bottom: 20px;
+        padding: 16px;
+        border-radius: 16px;
+        background-color: $fondo;
+    }
+
+    &__row{
+        @include flex-between;
+        padding: 3px 0;
+        font-size: 14px;
+        color: $texto-suave;
+
+        &--total{
+            margin-top: 6px;
+            padding-top: 9px;
+            border-top: 1px solid $borde;
+            font-size: 18px;
+            font-weight: 700;
+            color: $texto;
+
+            dd{
+                @extend %price;
+            }
+        }
+    }
+
+    &__checks{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    &__check{
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+        cursor: pointer;
+
+        &[hidden]{
+            display: none;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
+    }
+
+    &__input{
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        accent-color: $verde;
+    }
+
+    &__note{
+        margin-bottom: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+        color: $texto-suave;
+
+        a{
+            color: $verde;
+        }
+    }
+
+    &__actions{
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    &__back{
+        padding: 12px 20px;
+        border-radius: 999px;
+        background-color: $fondo;
+        color: $texto;
+        font-weight: 700;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: $borde;
+        }
+    }
+
+    &__submit{
+        @extend %button-pill;
+        padding: 12px 24px;
+    }
+}
+
+/* ===== Pagina legal ===== */
+.legal{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 72px;
+
+    &__title{
+        @extend %title;
+        font-size: 40px;
+        color: $verde;
+    }
+
+    &__notice{
+        max-width: 70ch;
+        margin: 20px 0 10px;
+        padding: 16px 20px;
+        border-left: 4px solid $verde-claro;
+        border-radius: 16px;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    &__updated{
+        margin-bottom: 32px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__layout{
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    &__index{
+        position: sticky;
+        top: 92px;
+        padding: 20px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+    }
+
+    &__index-title{
+        margin-bottom: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $texto-suave;
+    }
+
+    &__index-list{
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        list-style: none;
+    }
+
+    &__index-link{
+        display: block;
+        padding: 8px 12px;
+        border-radius: 12px;
+        color: $texto;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s, color 0.2s;
+
+        &:hover{
+            background-color: $fondo;
+            color: $verde;
+        }
+    }
+
+    &__content{
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 0;
+    }
+
+    // Tarjeta de cada sección. Dentro van textos largos (p, ul, ol, h3),
+    // por eso aquí se estilizan las etiquetas en vez de poner una clase a cada una
+    &__section{
+        padding: 32px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        scroll-margin-top: 88px;
+        overflow-wrap: break-word;
+
+        h3{
+            max-width: 70ch;
+            margin: 24px 0 8px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        p,
+        ul,
+        ol{
+            max-width: 70ch;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        ul,
+        ol{
+            padding-left: 22px;
+        }
+
+        li{
+            margin-bottom: 6px;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 600;
+        }
+    }
+
+    &__heading{
+        @extend %title;
+        margin-bottom: 8px;
+        font-size: 26px;
+        color: $verde;
+    }
+
+    &__data{
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 10px 24px;
+        margin-top: 16px;
+        line-height: 1.5;
+
+        dt{
+            font-weight: 700;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 600;
+        }
+    }
 }
 
 /* ===== Responsive ===== */
@@ -856,6 +1219,64 @@ button{
 
     .faq__title{
         font-size: 28px;
+    }
+
+    .footer{
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        text-align: center;
+
+        &__text{
+            justify-self: center;
+        }
+
+        &__nav{
+            justify-content: center;
+        }
+
+        &__legal{
+            margin-top: 8px;
+        }
+    }
+
+    .legal{
+        &__layout{
+            // minmax(0, 1fr) evita que la fila de cápsulas ensanche la página
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        &__index{
+            position: static;
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        &__index-title{
+            display: none;
+        }
+
+        &__index-list{
+            flex-direction: row;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar{
+                display: none;
+            }
+        }
+
+        &__index-link{
+            padding: 8px 16px;
+            border: 1px solid $borde;
+            border-radius: 999px;
+            background-color: $blanco;
+            white-space: nowrap;
+        }
     }
 }
 
@@ -966,18 +1387,60 @@ button{
         text-align: center;
     }
 
-    .footer{
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 12px;
+    .header__back{
+        font-size: 13px;
+    }
+
+    .storage-notice{
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
         text-align: center;
 
-        &__text{
-            justify-self: center;
+        &__button{
+            width: 100%;
+        }
+    }
+
+    .confirm{
+        width: 100%;
+        max-width: 100%;
+        margin: auto 0 0;
+        padding: 24px 16px;
+        border-radius: $radio $radio 0 0;
+
+        &__actions{
+            flex-direction: column-reverse;
         }
 
-        &__nav{
-            justify-content: center;
+        &__back,
+        &__submit{
+            width: 100%;
+        }
+    }
+
+    .legal{
+        padding: 32px 10px 48px;
+
+        &__title{
+            font-size: 30px;
+        }
+
+        &__section{
+            padding: 22px 16px;
+        }
+
+        &__heading{
+            font-size: 22px;
+        }
+
+        &__data{
+            grid-template-columns: 1fr;
+            gap: 2px;
+
+            dd{
+                margin-bottom: 10px;
+            }
         }
     }
 }
