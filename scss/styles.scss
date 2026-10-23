@@ -6,6 +6,15 @@ $blanco: #ffffff;
 $texto: #1d1d1f;
 $texto-suave: #6e6e73;
 $borde: #e5e5ea;
+$oferta: #c2410c;
+
+// Colores de las etiquetas de producto
+$badges: (
+    nuevo: $verde-claro,
+    top: $texto,
+    oferta: $oferta,
+    agotado: $texto-suave
+);
 
 $fuente: 'Nunito', sans-serif;
 $radio: 22px;
@@ -42,6 +51,37 @@ $bp-movil: 480px;
     gap: $gap;
 }
 
+// Panel lateral (carrito a la derecha, menú a la izquierda)
+@mixin side-panel($lado){
+    position: fixed;
+    top: 68px;
+    bottom: 0;
+    #{$lado}: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: $blanco;
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s 0.3s;
+
+    @if $lado == right{
+        box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+        transform: translateX(100%);
+    } @else {
+        box-shadow: 19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+        transform: translateX(-100%);
+    }
+
+    &--open{
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 0.3s ease, visibility 0s;
+    }
+}
+
 /* ===== Estilos generales ===== */
 *{
     margin: 0;
@@ -68,6 +108,12 @@ button{
     cursor: pointer;
 }
 
+@media (prefers-reduced-motion: no-preference){
+    html{
+        scroll-behavior: smooth;
+    }
+}
+
 // ===== Placeholders =====
 // Títulos
 %title{
@@ -79,6 +125,55 @@ button{
 %price{
     font-weight: 800;
     color: $verde;
+}
+
+// Botón cápsula verde
+%button-pill{
+    padding: 12px;
+    border-radius: 999px;
+    background-color: $verde;
+    color: $blanco;
+    font-weight: 700;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:hover{
+        background-color: $verde-claro;
+    }
+
+    &:active{
+        transform: scale(0.97);
+    }
+
+    &:disabled{
+        background-color: $borde;
+        color: $texto-suave;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+// Título de los paneles laterales
+%panel-title{
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: $verde;
+}
+
+// Botón × de los paneles laterales
+%panel-close{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    color: $texto;
+    font-size: 26px;
+    line-height: 1;
+    transition: background-color 0.2s;
+
+    &:hover{
+        background-color: $fondo;
+    }
 }
 
 /* ===== Header ===== */
@@ -98,6 +193,7 @@ button{
     }
 
     &__button{
+        position: relative;
         display: grid;
         place-items: center;
         width: 40px;
@@ -115,6 +211,50 @@ button{
         width: 26px;
         filter: invert(1);
     }
+
+    &__count{
+        position: absolute;
+        top: 0;
+        right: -2px;
+        display: grid;
+        place-items: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $verde;
+        font-size: 11px;
+        font-weight: 800;
+        transform: scale(0);
+        transition: transform 0.2s;
+
+        &--visible{
+            transform: scale(1);
+        }
+    }
+}
+
+// Header de legal.html: enlace a la izquierda y logo al centro
+.header--legal{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+}
+
+.header__back{
+    color: $blanco;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover{
+        text-decoration: underline;
+    }
+}
+
+.header__home{
+    display: block;
 }
 
 /* ===== Hero ===== */
@@ -141,6 +281,65 @@ button{
         font-size: 20px;
         opacity: 0.9;
     }
+
+    &__button{
+        display: inline-block;
+        margin-top: 28px;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $verde;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 0.2s, transform 0.1s;
+
+        &:hover{
+            background-color: $fondo;
+        }
+
+        &:active{
+            transform: scale(0.97);
+        }
+    }
+}
+
+/* ===== Beneficios ===== */
+.benefits{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+
+    &__list{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        list-style: none;
+    }
+
+    &__item{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 12px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    &__icon{
+        width: 32px;
+        height: 32px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        color: $verde;
+    }
 }
 
 /* ===== Productos ===== */
@@ -149,6 +348,7 @@ button{
     margin: 0 auto;
     padding: 72px 24px;
     text-align: center;
+    scroll-margin-top: 68px;
 
     &__title{
         @extend %title;
@@ -162,10 +362,66 @@ button{
         color: $texto-suave;
     }
 
+    &__count{
+        margin-bottom: 24px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
     &__grid{
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 24px;
+    }
+}
+
+/* ===== Filtros ===== */
+.filters{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    &__button{
+        flex-shrink: 0;
+        padding: 8px 18px;
+        border: 1px solid $borde;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $texto;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+
+        &:hover{
+            border-color: $verde-claro;
+        }
+
+        &[aria-pressed="true"]{
+            border-color: $verde;
+            background-color: $verde;
+            color: $blanco;
+        }
+    }
+}
+
+/* ===== Etiquetas ===== */
+.badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: $blanco;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+@each $nombre, $color in $badges{
+    .badge--#{$nombre}{
+        background-color: $color;
     }
 }
 
@@ -183,6 +439,19 @@ button{
     &:hover{
         transform: translateY(-4px);
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    &[hidden]{
+        display: none;
+    }
+
+    &--agotado &__image{
+        opacity: 0.55;
+        filter: grayscale(40%);
+    }
+
+    &__media{
+        position: relative;
     }
 
     &__image{
@@ -203,51 +472,109 @@ button{
         color: $texto-suave;
     }
 
+    &__legal{
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: $texto-suave;
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
+    }
+
     &__price{
         @extend %price;
         font-size: 20px;
     }
 
+    &__prices{
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    &__old-price{
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
     &__button{
+        @extend %button-pill;
         margin-top: 12px;
-        padding: 12px;
-        border-radius: 999px;
-        background-color: $verde;
-        color: $blanco;
-        font-weight: 700;
-        transition: background-color 0.2s, transform 0.1s;
-
-        &:hover{
-            background-color: $verde-claro;
-        }
-
-        &:active{
-            transform: scale(0.97);
-        }
     }
 }
 
 /* ===== Carrito ===== */
-.cart{
+.cart-overlay{
     position: fixed;
-    top: 68px;
-    right: -100%;
-    bottom: 0;
-    z-index: 20;
-    width: 380px;
-    padding: 24px;
-    overflow-y: auto;
-    background-color: $blanco;
-    box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+    inset: 0;
+    z-index: 5;
+    background-color: rgba($texto, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+
+    &--visible{
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.cart{
+    @include side-panel(right);
+
+    &__header{
+        @include flex-between;
+        margin-bottom: 12px;
+    }
 
     &__title{
-        width: 100%;
-        padding: 20px 0;
-        font-size: 20px;
-        font-weight: 600;
-        letter-spacing: -0.02em;
-        text-align: center;
-        color: $verde;
+        @extend %panel-title;
+    }
+
+    &__close{
+        @extend %panel-close;
+    }
+
+    &__shipping{
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__bar{
+        height: 6px;
+        margin: 8px 0 8px;
+        border-radius: 999px;
+        background-color: $borde;
+        overflow: hidden;
+    }
+
+    &__bar-fill{
+        width: 0;
+        height: 100%;
+        background-color: $verde-claro;
+        transition: width 0.3s;
+    }
+
+    &__list{
+        flex: 1;
+        list-style: none;
+
+        &:empty{
+            flex: 0;
+        }
+    }
+
+    &__empty{
+        display: none;
+        flex: 1;
+        place-items: center;
+        color: $texto-suave;
+    }
+
+    &__list:empty + &__empty{
+        display: grid;
     }
 
     &__item{
@@ -255,9 +582,9 @@ button{
         grid-template-columns: 64px 1fr auto;
         grid-template-areas:
             "img nombre borrar"
-            "img precio borrar";
+            "img cantidad precio";
         column-gap: 16px;
-        row-gap: 4px;
+        row-gap: 8px;
         align-items: center;
         padding: 16px 0;
         border-bottom: 1px solid $borde;
@@ -271,7 +598,6 @@ button{
 
     &__name{
         grid-area: nombre;
-        align-self: end;
         font-weight: 600;
         line-height: 1.3;
     }
@@ -279,18 +605,214 @@ button{
     &__price{
         @extend %price;
         grid-area: precio;
-        align-self: start;
+        justify-self: end;
+    }
+
+    &__qty{
+        grid-area: cantidad;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__qty-button,
+    &__delete{
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: $fondo;
+        }
+    }
+
+    &__qty-button{
+        width: 28px;
+        height: 28px;
+        border: 1px solid $borde;
+        background-color: $blanco;
+    }
+
+    &__qty-icon{
+        width: 14px;
+    }
+
+    &__qty-number{
+        min-width: 16px;
+        font-weight: 700;
+        text-align: center;
     }
 
     &__delete{
         grid-area: borrar;
-        display: flex;
-        width: 22px;
-        cursor: pointer;
+        justify-self: end;
+        width: 34px;
+        height: 34px;
+        background: transparent;
     }
 
     &__delete-icon{
+        width: 20px;
+    }
+
+    &__footer{
+        padding-top: 16px;
+        border-top: 1px solid $borde;
+    }
+
+    &__row{
+        @include flex-between;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__total{
+        @include flex-between;
+        margin-bottom: 16px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    &__total-price{
+        @extend %price;
+    }
+
+    &__checkout{
+        @extend %button-pill;
         width: 100%;
+    }
+}
+
+/* ===== Menu ===== */
+.menu{
+    @include side-panel(left);
+
+    &__header{
+        @include flex-between;
+        margin-bottom: 8px;
+    }
+
+    &__title{
+        @extend %panel-title;
+    }
+
+    &__close{
+        @extend %panel-close;
+    }
+
+    &__label{
+        margin: 20px 0 4px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $texto-suave;
+    }
+
+    &__link{
+        display: block;
+        padding: 14px 4px;
+        border-bottom: 1px solid $borde;
+        color: $texto;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+
+        &:hover{
+            color: $verde-claro;
+        }
+    }
+}
+
+/* ===== Preguntas frecuentes ===== */
+.faq{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 72px;
+    scroll-margin-top: 68px;
+
+    &__title{
+        @extend %title;
+        margin-bottom: 24px;
+        font-size: 32px;
+        color: $verde;
+        text-align: center;
+    }
+
+    &__list{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__item{
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+
+        &[open] .faq__question::after{
+            transform: rotate(45deg);
+        }
+    }
+
+    &__question{
+        @include flex-between;
+        gap: 16px;
+        padding: 20px 24px;
+        font-weight: 700;
+        list-style: none;
+        cursor: pointer;
+
+        &::-webkit-details-marker{
+            display: none;
+        }
+
+        &::after{
+            content: "+";
+            flex-shrink: 0;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1;
+            color: $verde;
+            transition: transform 0.2s;
+        }
+    }
+
+    &__answer{
+        padding: 0 24px 20px;
+        color: $texto-suave;
+        line-height: 1.5;
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
+    }
+}
+
+/* ===== Aviso ===== */
+.toast{
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: 30;
+    padding: 12px 24px;
+    border-radius: 999px;
+    background-color: $texto;
+    color: $blanco;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: $sombra;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+    transition: opacity 0.3s, transform 0.3s;
+
+    &--visible{
+        opacity: 1;
+        transform: translate(-50%, 0);
     }
 }
 
@@ -331,6 +853,324 @@ button{
         font-size: 14px;
         opacity: 0.8;
     }
+
+    &__legal{
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid rgba($blanco, 0.2);
+        font-size: 13px;
+        text-align: center;
+        opacity: 0.8;
+
+        a{
+            color: $blanco;
+        }
+    }
+}
+
+/* ===== Aviso de almacenamiento ===== */
+.storage-notice{
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: min(720px, calc(100% - 32px));
+    padding: 14px 16px 14px 24px;
+    border-radius: $radio;
+    background-color: $texto;
+    color: $blanco;
+    font-size: 14px;
+    box-shadow: $sombra;
+    transform: translateX(-50%);
+
+    &[hidden]{
+        display: none;
+    }
+
+    &__text a{
+        color: $blanco;
+    }
+
+    &__button{
+        @extend %button-pill;
+        flex-shrink: 0;
+        padding: 10px 22px;
+    }
+}
+
+/* ===== Ventana de confirmacion ===== */
+.confirm{
+    width: min(520px, calc(100% - 32px));
+    max-height: calc(100% - 32px);
+    margin: auto;
+    padding: 28px;
+    border: none;
+    border-radius: $radio;
+    background-color: $blanco;
+    color: $texto;
+    box-shadow: $sombra;
+
+    &::backdrop{
+        background-color: rgba($texto, 0.45);
+    }
+
+    &__title{
+        @extend %panel-title;
+        margin-bottom: 16px;
+    }
+
+    &__summary{
+        margin-bottom: 20px;
+        padding: 16px;
+        border-radius: 16px;
+        background-color: $fondo;
+    }
+
+    &__row{
+        @include flex-between;
+        padding: 3px 0;
+        font-size: 14px;
+        color: $texto-suave;
+
+        &--total{
+            margin-top: 6px;
+            padding-top: 9px;
+            border-top: 1px solid $borde;
+            font-size: 18px;
+            font-weight: 700;
+            color: $texto;
+
+            dd{
+                @extend %price;
+            }
+        }
+    }
+
+    &__checks{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    &__check{
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+        cursor: pointer;
+
+        &[hidden]{
+            display: none;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 700;
+        }
+    }
+
+    &__input{
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        accent-color: $verde;
+    }
+
+    &__note{
+        margin-bottom: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+        color: $texto-suave;
+
+        a{
+            color: $verde;
+        }
+    }
+
+    &__actions{
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    &__back{
+        padding: 12px 20px;
+        border-radius: 999px;
+        background-color: $fondo;
+        color: $texto;
+        font-weight: 700;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: $borde;
+        }
+    }
+
+    &__submit{
+        @extend %button-pill;
+        padding: 12px 24px;
+    }
+}
+
+/* ===== Pagina legal ===== */
+.legal{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 72px;
+
+    &__title{
+        @extend %title;
+        font-size: 40px;
+        color: $verde;
+    }
+
+    &__notice{
+        max-width: 70ch;
+        margin: 20px 0 10px;
+        padding: 16px 20px;
+        border-left: 4px solid $verde-claro;
+        border-radius: 16px;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    &__updated{
+        margin-bottom: 32px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__layout{
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    &__index{
+        position: sticky;
+        top: 92px;
+        padding: 20px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+    }
+
+    &__index-title{
+        margin-bottom: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $texto-suave;
+    }
+
+    &__index-list{
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        list-style: none;
+    }
+
+    &__index-link{
+        display: block;
+        padding: 8px 12px;
+        border-radius: 12px;
+        color: $texto;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s, color 0.2s;
+
+        &:hover{
+            background-color: $fondo;
+            color: $verde;
+        }
+    }
+
+    &__content{
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 0;
+    }
+
+    // Tarjeta de cada sección. Dentro van textos largos (p, ul, ol, h3),
+    // por eso aquí se estilizan las etiquetas en vez de poner una clase a cada una
+    &__section{
+        padding: 32px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        scroll-margin-top: 88px;
+        overflow-wrap: break-word;
+
+        h3{
+            max-width: 70ch;
+            margin: 24px 0 8px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        p,
+        ul,
+        ol{
+            max-width: 70ch;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        ul,
+        ol{
+            padding-left: 22px;
+        }
+
+        li{
+            margin-bottom: 6px;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 600;
+        }
+    }
+
+    &__heading{
+        @extend %title;
+        margin-bottom: 8px;
+        font-size: 26px;
+        color: $verde;
+    }
+
+    &__data{
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 10px 24px;
+        margin-top: 16px;
+        line-height: 1.5;
+
+        dt{
+            font-weight: 700;
+        }
+
+        a{
+            color: $verde;
+            font-weight: 600;
+        }
+    }
 }
 
 /* ===== Responsive ===== */
@@ -368,8 +1208,75 @@ button{
         }
     }
 
-    .cart{
+    .benefits__list{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cart,
+    .menu{
         top: 66px;
+    }
+
+    .faq__title{
+        font-size: 28px;
+    }
+
+    .footer{
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        text-align: center;
+
+        &__text{
+            justify-self: center;
+        }
+
+        &__nav{
+            justify-content: center;
+        }
+
+        &__legal{
+            margin-top: 8px;
+        }
+    }
+
+    .legal{
+        &__layout{
+            // minmax(0, 1fr) evita que la fila de cápsulas ensanche la página
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        &__index{
+            position: static;
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        &__index-title{
+            display: none;
+        }
+
+        &__index-list{
+            flex-direction: row;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar{
+                display: none;
+            }
+        }
+
+        &__index-link{
+            padding: 8px 16px;
+            border: 1px solid $borde;
+            border-radius: 999px;
+            background-color: $blanco;
+            white-space: nowrap;
+        }
     }
 }
 
@@ -398,41 +1305,142 @@ button{
         }
     }
 
+    .benefits{
+        padding: 24px 10px 0;
+
+        &__list{
+            gap: 10px;
+        }
+
+        &__item{
+            gap: 6px;
+            padding: 14px 8px;
+            font-size: 13px;
+        }
+
+        &__icon{
+            width: 26px;
+            height: 26px;
+        }
+    }
+
+    .filters{
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar{
+            display: none;
+        }
+    }
+
     .product-card{
         text-align: center;
 
-        &__image{
+        &__media{
+            width: 100%;
             max-width: 200px;
-            margin: 0 auto 10px;
+            margin: 0 auto;
+        }
+
+        &__image{
+            margin-bottom: 10px;
         }
 
         &__title,
         &__text{
             padding: 0 10px;
         }
+
+        &__prices{
+            justify-content: center;
+        }
     }
 
-    .cart{
+    .cart,
+    .menu{
         width: 100%;
+        padding: 20px 16px;
         box-shadow: none;
+    }
+
+    .faq{
+        padding: 0 10px 40px;
 
         &__title{
-            padding: 15px 0;
+            font-size: 24px;
+        }
+
+        &__question{
+            padding: 16px 18px;
+        }
+
+        &__answer{
+            padding: 0 18px 16px;
         }
     }
 
-    .footer{
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 12px;
+    .toast{
+        width: calc(100% - 32px);
+        text-align: center;
+    }
+
+    .header__back{
+        font-size: 13px;
+    }
+
+    .storage-notice{
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
         text-align: center;
 
-        &__text{
-            justify-self: center;
+        &__button{
+            width: 100%;
+        }
+    }
+
+    .confirm{
+        width: 100%;
+        max-width: 100%;
+        margin: auto 0 0;
+        padding: 24px 16px;
+        border-radius: $radio $radio 0 0;
+
+        &__actions{
+            flex-direction: column-reverse;
         }
 
-        &__nav{
-            justify-content: center;
+        &__back,
+        &__submit{
+            width: 100%;
+        }
+    }
+
+    .legal{
+        padding: 32px 10px 48px;
+
+        &__title{
+            font-size: 30px;
+        }
+
+        &__section{
+            padding: 22px 16px;
+        }
+
+        &__heading{
+            font-size: 22px;
+        }
+
+        &__data{
+            grid-template-columns: 1fr;
+            gap: 2px;
+
+            dd{
+                margin-bottom: 10px;
+            }
         }
     }
 }
