@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Reptilianos | Tienda de Reptiles y Exóticos</title>
+</head>
+<body>
+    <header class="header">
+        <button class="header__button" aria-label="Abrir menú"><img class="header__icon" src="img/icons/menu.svg" alt=""></button>
+        <img class="header__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Reptilianos">
+        <button class="header__button" aria-label="Ver carrito"><img class="header__icon" src="img/icons/shopping-cart.svg" alt=""></button>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1 class="hero__title">Bienvenidos al Clan Reptilianos</h1>
+            <p class="hero__text">Todo lo que tu compañero de sangre fría necesita: terrarios profesionales, alimento vivo de alta calidad y la asesoría experta que mereces.</p>
+        </section>
+
+        <!-- Sección de Productos Nuevos -->
+        <section class="products">
+            <h2 class="products__title">Novedades Exóticas</h2>
+            <p class="products__text">Lo último en tecnología para terrarios, iluminación especializada y accesorios premium recién llegados a nuestro inventario.</p>
+
+            <!-- Estructura productos-->
+            <div class="products__grid">
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
+                <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
+                <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
+                <span class="product-card__price">$99.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
+                <h3 class="product-card__title">Alimento Vivo Premium</h3>
+                <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
+                <span class="product-card__price">$29.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
+                <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
+                <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
+                <span class="product-card__price">$49.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
+                <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
+                <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
+                <span class="product-card__price">$99.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
+                <h3 class="product-card__title">Alimento Vivo Premium</h3>
+                <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
+                <span class="product-card__price">$29.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+
+            <article class="product-card">
+                <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
+                <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
+                <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
+                <span class="product-card__price">$49.99</span>
+                <button class="product-card__button">Añadir al carrito</button>
+            </article>
+            </div>
+        </section>
+
+        <section class="cart">
+            <h2 class="cart__title">Carrito</h2>
+            <div class="cart__item">
+                <img class="cart__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
+                <p class="cart__price">$99.99</p>
+                <p class="cart__name">Terrario Profesional de Vidrio v2</p>
+                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
+            </div>
+
+            <div class="cart__item">
+                <img class="cart__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
+                <p class="cart__price">$29.99</p>
+                <p class="cart__name">Alimento Vivo Premium</p>
+                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
+            </div>
+
+            <div class="cart__item">
+                <img class="cart__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
+                <p class="cart__price">$49.99</p>
+                <p class="cart__name">Lámpara UVB de Alta Potencia</p>
+                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <img class="footer__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Reptilianos">
+        <nav class="footer__nav" aria-label="Enlaces del sitio">
+            <a class="footer__link" href="#">Ayuda</a>
+            <a class="footer__link" href="#">Envíos</a>
+            <a class="footer__link" href="#">Devoluciones</a>
+            <a class="footer__link" href="#">Contacto</a>
+        </nav>
+        <p class="footer__text">© 2026 Reptilianos. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

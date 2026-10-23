@@ -1,0 +1,438 @@
+// ===== Variables =====
+$verde: #2a4924;
+$verde-claro: #3f6b36;
+$fondo: #f5f5f7;
+$blanco: #ffffff;
+$texto: #1d1d1f;
+$texto-suave: #6e6e73;
+$borde: #e5e5ea;
+
+$fuente: 'Nunito', sans-serif;
+$radio: 22px;
+$sombra: 0 8px 30px rgba(0, 0, 0, 0.06);
+
+$bp-tablet: 820px;
+$bp-movil: 480px;
+
+// ===== Mixins =====
+// Media query
+@mixin respond-to($breakpoint){
+    @media screen and (max-width: $breakpoint){
+        @content;
+    }
+}
+
+// header
+@mixin flex-between{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+// Imagen
+@mixin image-cover($radius){
+    border-radius: $radius;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+@mixin nav-links($gap){
+    display: flex;
+    flex-wrap: wrap;
+    gap: $gap;
+}
+
+/* ===== Estilos generales ===== */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: $fuente;
+    font-size: 16px;
+    color: $texto;
+    background-color: $fondo;
+    -webkit-font-smoothing: antialiased;
+}
+
+img{
+    display: block;
+    max-width: 100%;
+}
+
+button{
+    font: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+// ===== Placeholders =====
+// Títulos
+%title{
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+// Precios
+%price{
+    font-weight: 800;
+    color: $verde;
+}
+
+/* ===== Header ===== */
+.header{
+    @include flex-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 12px 24px;
+    background-color: rgba($verde, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+
+    &__logo{
+        width: auto;
+        height: 44px;
+    }
+
+    &__button{
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: transparent;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: rgba($blanco, 0.15);
+        }
+    }
+
+    &__icon{
+        width: 26px;
+        filter: invert(1);
+    }
+}
+
+/* ===== Hero ===== */
+.hero{
+    padding: 120px 24px;
+    text-align: center;
+    color: $blanco;
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)),
+        url('../img/backgrounds/hero-bg.jpg');
+    background-size: cover;
+    background-position: center 30%;
+
+    &__title{
+        @extend %title;
+        margin-bottom: 16px;
+        font-size: 48px;
+        line-height: 1.1;
+    }
+
+    &__text{
+        max-width: 640px;
+        margin: 0 auto;
+        font-size: 20px;
+        opacity: 0.9;
+    }
+}
+
+/* ===== Productos ===== */
+.products{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 72px 24px;
+    text-align: center;
+
+    &__title{
+        @extend %title;
+        font-size: 32px;
+        color: $verde;
+    }
+
+    &__text{
+        max-width: 560px;
+        margin: 12px auto 40px;
+        color: $texto-suave;
+    }
+
+    &__grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 24px;
+    }
+}
+
+/* ===== Tarjeta de producto ===== */
+.product-card{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: $radio;
+    background-color: $blanco;
+    box-shadow: $sombra;
+    text-align: left;
+    transition: transform 0.25s, box-shadow 0.25s;
+
+    &:hover{
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    &__image{
+        @include image-cover(16px);
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    &__title{
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    &__text{
+        flex: 1;
+        margin: 6px 0 16px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__price{
+        @extend %price;
+        font-size: 20px;
+    }
+
+    &__button{
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 999px;
+        background-color: $verde;
+        color: $blanco;
+        font-weight: 700;
+        transition: background-color 0.2s, transform 0.1s;
+
+        &:hover{
+            background-color: $verde-claro;
+        }
+
+        &:active{
+            transform: scale(0.97);
+        }
+    }
+}
+
+/* ===== Carrito ===== */
+.cart{
+    position: fixed;
+    top: 68px;
+    right: -100%;
+    bottom: 0;
+    z-index: 20;
+    width: 380px;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: $blanco;
+    box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+
+    &__title{
+        width: 100%;
+        padding: 20px 0;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-align: center;
+        color: $verde;
+    }
+
+    &__item{
+        display: grid;
+        grid-template-columns: 64px 1fr auto;
+        grid-template-areas:
+            "img nombre borrar"
+            "img precio borrar";
+        column-gap: 16px;
+        row-gap: 4px;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid $borde;
+    }
+
+    &__image{
+        @include image-cover(10px);
+        grid-area: img;
+        width: 64px;
+    }
+
+    &__name{
+        grid-area: nombre;
+        align-self: end;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    &__price{
+        @extend %price;
+        grid-area: precio;
+        align-self: start;
+    }
+
+    &__delete{
+        grid-area: borrar;
+        display: flex;
+        width: 22px;
+        cursor: pointer;
+    }
+
+    &__delete-icon{
+        width: 100%;
+    }
+}
+
+/* ===== Footer ===== */
+.footer{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: 24px;
+    padding: 24px;
+    background-color: $verde;
+    color: $blanco;
+
+    &__logo{
+        width: auto;
+        height: 40px;
+    }
+
+    &__nav{
+        @include nav-links(20px);
+    }
+
+    &__link{
+        font-size: 14px;
+        color: $blanco;
+        text-decoration: none;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+
+        &:hover{
+            opacity: 1;
+            text-decoration: underline;
+        }
+    }
+
+    &__text{
+        justify-self: end;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+}
+
+/* ===== Responsive ===== */
+@include respond-to($bp-tablet){
+    .header{
+        padding: 15px 20px;
+
+        &__logo{
+            height: 36px;
+        }
+
+        &__icon{
+            width: 22px;
+        }
+    }
+
+    .hero{
+        &__title{
+            font-size: 40px;
+        }
+
+        &__text{
+            font-size: 18px;
+        }
+    }
+
+    .products{
+        &__title{
+            font-size: 28px;
+        }
+
+        &__grid{
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+    }
+
+    .cart{
+        top: 66px;
+    }
+}
+
+@include respond-to($bp-movil){
+    .hero{
+        padding: 60px 16px;
+
+        &__title{
+            font-size: 28px;
+        }
+
+        &__text{
+            font-size: 16px;
+        }
+    }
+
+    .products{
+        padding: 40px 10px;
+
+        &__title{
+            font-size: 24px;
+        }
+
+        &__grid{
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .product-card{
+        text-align: center;
+
+        &__image{
+            max-width: 200px;
+            margin: 0 auto 10px;
+        }
+
+        &__title,
+        &__text{
+            padding: 0 10px;
+        }
+    }
+
+    .cart{
+        width: 100%;
+        box-shadow: none;
+
+        &__title{
+            padding: 15px 0;
+        }
+    }
+
+    .footer{
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+        text-align: center;
+
+        &__text{
+            justify-self: center;
+        }
+
+        &__nav{
+            justify-content: center;
+        }
+    }
+}
