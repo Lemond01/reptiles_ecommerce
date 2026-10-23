@@ -13,7 +13,10 @@
     <header class="header">
         <button class="header__button" aria-label="Abrir menú"><img class="header__icon" src="img/icons/menu.svg" alt=""></button>
         <img class="header__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Reptilianos">
-        <button class="header__button" aria-label="Ver carrito"><img class="header__icon" src="img/icons/shopping-cart.svg" alt=""></button>
+        <button class="header__button" id="boton-carrito" type="button" aria-label="Ver carrito" aria-controls="carrito" aria-expanded="false">
+            <img class="header__icon" src="img/icons/shopping-cart.svg" alt="">
+            <span class="header__count" aria-hidden="true">0</span>
+        </button>
     </header>
 
     <main>
@@ -29,7 +32,7 @@
 
             <!-- Estructura productos-->
             <div class="products__grid">
-            <article class="product-card">
+            <article class="product-card" data-id="terrario-vidrio" data-nombre="Terrario Profesional de Vidrio v2" data-precio="99.99" data-imagen="img/products/glass-terrarium.png">
                 <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
                 <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
                 <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
@@ -37,7 +40,7 @@
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
 
-            <article class="product-card">
+            <article class="product-card" data-id="alimento-vivo" data-nombre="Alimento Vivo Premium" data-precio="29.99" data-imagen="img/products/live-crickets-mealworms.png">
                 <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
                 <h3 class="product-card__title">Alimento Vivo Premium</h3>
                 <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
@@ -45,7 +48,7 @@
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
 
-            <article class="product-card">
+            <article class="product-card" data-id="lampara-uvb" data-nombre="Lámpara UVB de Alta Potencia" data-precio="49.99" data-imagen="img/products/uvb-dome-lamp.png">
                 <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
                 <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
                 <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
@@ -53,7 +56,7 @@
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
 
-            <article class="product-card">
+            <article class="product-card" data-id="terrario-vidrio" data-nombre="Terrario Profesional de Vidrio v2" data-precio="99.99" data-imagen="img/products/glass-terrarium.png">
                 <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
                 <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
                 <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
@@ -61,7 +64,7 @@
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
 
-            <article class="product-card">
+            <article class="product-card" data-id="alimento-vivo" data-nombre="Alimento Vivo Premium" data-precio="29.99" data-imagen="img/products/live-crickets-mealworms.png">
                 <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
                 <h3 class="product-card__title">Alimento Vivo Premium</h3>
                 <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
@@ -69,37 +72,13 @@
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
 
-            <article class="product-card">
+            <article class="product-card" data-id="lampara-uvb" data-nombre="Lámpara UVB de Alta Potencia" data-precio="49.99" data-imagen="img/products/uvb-dome-lamp.png">
                 <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
                 <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
                 <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
                 <span class="product-card__price">$49.99</span>
                 <button class="product-card__button">Añadir al carrito</button>
             </article>
-            </div>
-        </section>
-
-        <section class="cart">
-            <h2 class="cart__title">Carrito</h2>
-            <div class="cart__item">
-                <img class="cart__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
-                <p class="cart__price">$99.99</p>
-                <p class="cart__name">Terrario Profesional de Vidrio v2</p>
-                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
-            </div>
-
-            <div class="cart__item">
-                <img class="cart__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
-                <p class="cart__price">$29.99</p>
-                <p class="cart__name">Alimento Vivo Premium</p>
-                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
-            </div>
-
-            <div class="cart__item">
-                <img class="cart__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
-                <p class="cart__price">$49.99</p>
-                <p class="cart__name">Lámpara UVB de Alta Potencia</p>
-                <i class="cart__delete"><img class="cart__delete-icon" src="img/icons/trash.svg" alt="Icono Eliminar"></i>
             </div>
         </section>
     </main>
@@ -114,5 +93,34 @@
         </nav>
         <p class="footer__text">© 2026 Reptilianos. Todos los derechos reservados.</p>
     </footer>
+
+    <div class="cart-overlay"></div>
+
+    <aside class="cart" id="carrito" aria-label="Carrito de compras">
+        <div class="cart__header">
+            <h2 class="cart__title">Carrito</h2>
+            <button class="cart__close" type="button" aria-label="Cerrar carrito">×</button>
+        </div>
+
+        <p class="cart__shipping"></p>
+        <div class="cart__bar" aria-hidden="true">
+            <div class="cart__bar-fill"></div>
+        </div>
+
+        <ul class="cart__list"></ul>
+        <p class="cart__empty">Tu carrito está vacío.</p>
+
+        <div class="cart__footer">
+            <p class="cart__total">
+                <span>Total</span>
+                <span class="cart__total-price">$0.00</span>
+            </p>
+            <button class="cart__checkout" type="button">Finalizar compra</button>
+        </div>
+    </aside>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>

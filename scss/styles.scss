@@ -81,6 +81,24 @@ button{
     color: $verde;
 }
 
+// Botón cápsula verde
+%button-pill{
+    padding: 12px;
+    border-radius: 999px;
+    background-color: $verde;
+    color: $blanco;
+    font-weight: 700;
+    transition: background-color 0.2s, transform 0.1s;
+
+    &:hover{
+        background-color: $verde-claro;
+    }
+
+    &:active{
+        transform: scale(0.97);
+    }
+}
+
 /* ===== Header ===== */
 .header{
     @include flex-between;
@@ -98,6 +116,7 @@ button{
     }
 
     &__button{
+        position: relative;
         display: grid;
         place-items: center;
         width: 40px;
@@ -114,6 +133,28 @@ button{
     &__icon{
         width: 26px;
         filter: invert(1);
+    }
+
+    &__count{
+        position: absolute;
+        top: 0;
+        right: -2px;
+        display: grid;
+        place-items: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $verde;
+        font-size: 11px;
+        font-weight: 800;
+        transform: scale(0);
+        transition: transform 0.2s;
+
+        &--visible{
+            transform: scale(1);
+        }
     }
 }
 
@@ -209,45 +250,115 @@ button{
     }
 
     &__button{
+        @extend %button-pill;
         margin-top: 12px;
-        padding: 12px;
-        border-radius: 999px;
-        background-color: $verde;
-        color: $blanco;
-        font-weight: 700;
-        transition: background-color 0.2s, transform 0.1s;
-
-        &:hover{
-            background-color: $verde-claro;
-        }
-
-        &:active{
-            transform: scale(0.97);
-        }
     }
 }
 
 /* ===== Carrito ===== */
+.cart-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background-color: rgba($texto, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+
+    &--visible{
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
 .cart{
     position: fixed;
     top: 68px;
-    right: -100%;
+    right: 0;
     bottom: 0;
     z-index: 20;
+    display: flex;
+    flex-direction: column;
     width: 380px;
     padding: 24px;
     overflow-y: auto;
     background-color: $blanco;
     box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s 0.3s;
+
+    &--open{
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 0.3s ease, visibility 0s;
+    }
+
+    &__header{
+        @include flex-between;
+        margin-bottom: 12px;
+    }
 
     &__title{
-        width: 100%;
-        padding: 20px 0;
         font-size: 20px;
         font-weight: 600;
         letter-spacing: -0.02em;
-        text-align: center;
         color: $verde;
+    }
+
+    &__close{
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: transparent;
+        color: $texto;
+        font-size: 26px;
+        line-height: 1;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: $fondo;
+        }
+    }
+
+    &__shipping{
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
+    &__bar{
+        height: 6px;
+        margin: 8px 0 8px;
+        border-radius: 999px;
+        background-color: $borde;
+        overflow: hidden;
+    }
+
+    &__bar-fill{
+        width: 0;
+        height: 100%;
+        background-color: $verde-claro;
+        transition: width 0.3s;
+    }
+
+    &__list{
+        flex: 1;
+        list-style: none;
+
+        &:empty{
+            flex: 0;
+        }
+    }
+
+    &__empty{
+        display: none;
+        flex: 1;
+        place-items: center;
+        color: $texto-suave;
+    }
+
+    &__list:empty + &__empty{
+        display: grid;
     }
 
     &__item{
@@ -255,9 +366,9 @@ button{
         grid-template-columns: 64px 1fr auto;
         grid-template-areas:
             "img nombre borrar"
-            "img precio borrar";
+            "img cantidad precio";
         column-gap: 16px;
-        row-gap: 4px;
+        row-gap: 8px;
         align-items: center;
         padding: 16px 0;
         border-bottom: 1px solid $borde;
@@ -271,7 +382,6 @@ button{
 
     &__name{
         grid-area: nombre;
-        align-self: end;
         font-weight: 600;
         line-height: 1.3;
     }
@@ -279,18 +389,107 @@ button{
     &__price{
         @extend %price;
         grid-area: precio;
-        align-self: start;
+        justify-self: end;
+    }
+
+    &__qty{
+        grid-area: cantidad;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__qty-button,
+    &__delete{
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+
+        &:hover{
+            background-color: $fondo;
+        }
+    }
+
+    &__qty-button{
+        width: 28px;
+        height: 28px;
+        border: 1px solid $borde;
+        background-color: $blanco;
+    }
+
+    &__qty-icon{
+        width: 14px;
+    }
+
+    &__qty-number{
+        min-width: 16px;
+        font-weight: 700;
+        text-align: center;
     }
 
     &__delete{
         grid-area: borrar;
-        display: flex;
-        width: 22px;
-        cursor: pointer;
+        justify-self: end;
+        width: 34px;
+        height: 34px;
+        background: transparent;
     }
 
     &__delete-icon{
+        width: 20px;
+    }
+
+    &__footer{
+        padding-top: 16px;
+        border-top: 1px solid $borde;
+    }
+
+    &__total{
+        @include flex-between;
+        margin-bottom: 16px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    &__total-price{
+        @extend %price;
+    }
+
+    &__checkout{
+        @extend %button-pill;
         width: 100%;
+
+        &:disabled{
+            background-color: $borde;
+            color: $texto-suave;
+            cursor: not-allowed;
+            transform: none;
+        }
+    }
+}
+
+/* ===== Aviso ===== */
+.toast{
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: 30;
+    padding: 12px 24px;
+    border-radius: 999px;
+    background-color: $texto;
+    color: $blanco;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: $sombra;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+    transition: opacity 0.3s, transform 0.3s;
+
+    &--visible{
+        opacity: 1;
+        transform: translate(-50%, 0);
     }
 }
 
@@ -414,11 +613,13 @@ button{
 
     .cart{
         width: 100%;
+        padding: 20px 16px;
         box-shadow: none;
+    }
 
-        &__title{
-            padding: 15px 0;
-        }
+    .toast{
+        width: calc(100% - 32px);
+        text-align: center;
     }
 
     .footer{
