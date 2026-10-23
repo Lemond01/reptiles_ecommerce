@@ -1,6 +1,6 @@
 // ===== Configuración =====
 const ENVIO_GRATIS = 150;                    // Monto mínimo para el envío gratis
-const CLAVE_GUARDADO = 'reptilianos-carrito'; // Nombre con el que se guarda en localStorage
+const CLAVE_GUARDADO = 'repko-carrito';       // Nombre con el que se guarda en localStorage
 const DURACION_AVISO = 2500;                 // Tiempo que se ve el aviso (en milisegundos)
 
 
@@ -17,6 +17,17 @@ const totalTexto = document.querySelector('.cart__total-price');
 const botonFinalizar = document.querySelector('.cart__checkout');
 const aviso = document.querySelector('.toast');
 const botonesAnadir = document.querySelectorAll('.product-card__button');
+const tarjetas = document.querySelectorAll('.product-card');
+
+// Menú lateral
+const botonMenu = document.getElementById('boton-menu');
+const menuPanel = document.getElementById('menu');
+const botonCerrarMenu = document.querySelector('.menu__close');
+const enlacesMenu = document.querySelectorAll('.menu__link');
+
+// Filtros
+const botonesFiltro = document.querySelectorAll('.filters__button');
+const textoConteo = document.querySelector('.products__count');
 
 
 // ===== Estado =====
@@ -58,6 +69,7 @@ function carritoAbierto() {
 }
 
 function abrirCarrito() {
+    cerrarMenu(false); // Solo puede haber un panel abierto
     carritoPanel.classList.add('cart--open');
     fondo.classList.add('cart-overlay--visible');
     botonCarrito.setAttribute('aria-expanded', 'true');
@@ -86,11 +98,70 @@ botonCarrito.addEventListener('click', function () {
 });
 
 botonCerrar.addEventListener('click', cerrarCarrito);
-fondo.addEventListener('click', cerrarCarrito);
+
+
+// ===== Menú =====
+function menuAbierto() {
+    return menuPanel.classList.contains('menu--open');
+}
+
+function abrirMenu() {
+    cerrarCarrito(); // Solo puede haber un panel abierto
+    menuPanel.classList.add('menu--open');
+    fondo.classList.add('cart-overlay--visible'); // Reutilizamos el fondo del carrito
+    botonMenu.setAttribute('aria-expanded', 'true');
+    botonCerrarMenu.focus();
+}
+
+// devolverFoco = false cuando el menú se cierra al hacer clic en un enlace
+// (así el foco no regresa al header mientras la página baja)
+function cerrarMenu(devolverFoco = true) {
+    const focoDentro = menuPanel.contains(document.activeElement);
+
+    menuPanel.classList.remove('menu--open');
+    fondo.classList.remove('cart-overlay--visible');
+    botonMenu.setAttribute('aria-expanded', 'false');
+
+    if (devolverFoco && focoDentro) {
+        botonMenu.focus();
+    }
+}
+
+botonMenu.addEventListener('click', function () {
+    if (menuAbierto()) {
+        cerrarMenu();
+    } else {
+        abrirMenu();
+    }
+});
+
+botonCerrarMenu.addEventListener('click', function () {
+    cerrarMenu();
+});
+
+// Los enlaces de categoría aplican el filtro; todos cierran el menú.
+// No evitamos el comportamiento del enlace, así la página baja a #productos o #faq
+enlacesMenu.forEach(function (enlace) {
+    enlace.addEventListener('click', function () {
+        if (enlace.dataset.filtro) {
+            aplicarFiltro(enlace.dataset.filtro);
+        }
+        cerrarMenu(false);
+    });
+});
+
+
+// ===== Cerrar paneles con el fondo y con Escape =====
+function cerrarPaneles() {
+    if (carritoAbierto()) cerrarCarrito();
+    if (menuAbierto()) cerrarMenu();
+}
+
+fondo.addEventListener('click', cerrarPaneles);
 
 document.addEventListener('keydown', function (evento) {
-    if (evento.key === 'Escape' && carritoAbierto()) {
-        cerrarCarrito();
+    if (evento.key === 'Escape') {
+        cerrarPaneles();
     }
 });
 
@@ -112,6 +183,10 @@ function mostrarAviso(mensaje) {
 function anadirProducto(tarjeta) {
     // Los datos vienen de los atributos data-* de cada tarjeta
     const datos = tarjeta.dataset;
+
+    // Un producto agotado nunca entra al carrito
+    if (datos.agotado === 'true') return;
+
     const existente = carrito.find(function (producto) {
         return producto.id === datos.id;
     });
@@ -180,6 +255,44 @@ botonFinalizar.addEventListener('click', function () {
     actualizar();
     cerrarCarrito();
     mostrarAviso('¡Gracias por tu pedido! Te contactaremos para el pago y envío.');
+});
+
+
+// ===== Filtros =====
+// Muestra solo las tarjetas de la categoría elegida ('todos' las muestra todas)
+function aplicarFiltro(categoria) {
+    let visibles = 0;
+
+    tarjetas.forEach(function (tarjeta) {
+        const coincide = categoria === 'todos' || tarjeta.dataset.categoria === categoria;
+        tarjeta.hidden = !coincide; // El atributo hidden oculta la tarjeta
+        if (coincide) visibles++;
+    });
+
+    // Marcamos como presionado solo el botón del filtro activo
+    botonesFiltro.forEach(function (boton) {
+        boton.setAttribute('aria-pressed', boton.dataset.filtro === categoria);
+    });
+
+    textoConteo.textContent = 'Mostrando ' + visibles + (visibles === 1 ? ' producto' : ' productos');
+}
+
+botonesFiltro.forEach(function (boton) {
+    boton.addEventListener('click', function () {
+        aplicarFiltro(boton.dataset.filtro);
+    });
+});
+
+
+// ===== Etiquetas/Agotado =====
+// Las tarjetas con data-agotado="true" no se pueden comprar
+tarjetas.forEach(function (tarjeta) {
+    if (tarjeta.dataset.agotado === 'true') {
+        const boton = tarjeta.querySelector('.product-card__button');
+        boton.disabled = true;          // Deshabilitado: no se puede hacer clic
+        boton.textContent = 'Agotado';
+        tarjeta.classList.add('product-card--agotado'); // Apaga la imagen (en el SCSS)
+    }
 });
 
 

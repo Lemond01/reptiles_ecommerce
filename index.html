@@ -7,12 +7,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Reptilianos | Tienda de Reptiles y Exóticos</title>
+    <title>Repko | Tienda de Reptiles y Exóticos</title>
 </head>
 <body>
     <header class="header">
-        <button class="header__button" aria-label="Abrir menú"><img class="header__icon" src="img/icons/menu.svg" alt=""></button>
-        <img class="header__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Reptilianos">
+        <button class="header__button" id="boton-menu" type="button" aria-label="Abrir menú" aria-controls="menu" aria-expanded="false">
+            <img class="header__icon" src="img/icons/menu.svg" alt="">
+        </button>
+        <img class="header__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Repko">
         <button class="header__button" id="boton-carrito" type="button" aria-label="Ver carrito" aria-controls="carrito" aria-expanded="false">
             <img class="header__icon" src="img/icons/shopping-cart.svg" alt="">
             <span class="header__count" aria-hidden="true">0</span>
@@ -21,80 +23,195 @@
 
     <main>
         <section class="hero">
-            <h1 class="hero__title">Bienvenidos al Clan Reptilianos</h1>
+            <h1 class="hero__title">Bienvenidos al Clan Repko</h1>
             <p class="hero__text">Todo lo que tu compañero de sangre fría necesita: terrarios profesionales, alimento vivo de alta calidad y la asesoría experta que mereces.</p>
+            <a class="hero__button" href="#productos">Ver productos</a>
+        </section>
+
+        <!-- Franja de beneficios -->
+        <section class="benefits" aria-label="Beneficios de comprar en Repko">
+            <ul class="benefits__list">
+                <li class="benefits__item">
+                    <svg class="benefits__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M3 6h11v10H3z"/>
+                        <path d="M14 10h4l3 3v3h-7"/>
+                        <circle cx="7" cy="17.5" r="2"/>
+                        <circle cx="17" cy="17.5" r="2"/>
+                    </svg>
+                    <span>Envío a todo México</span>
+                </li>
+                <li class="benefits__item">
+                    <svg class="benefits__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>
+                        <path d="M9 11h6"/>
+                        <path d="M9 14h4"/>
+                    </svg>
+                    <span>Asesoría experta</span>
+                </li>
+                <li class="benefits__item">
+                    <svg class="benefits__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <span>Garantía de 30 días</span>
+                </li>
+                <li class="benefits__item">
+                    <svg class="benefits__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="5" y="11" width="14" height="10" rx="2"/>
+                        <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                    </svg>
+                    <span>Compra segura</span>
+                </li>
+            </ul>
         </section>
 
         <!-- Sección de Productos Nuevos -->
-        <section class="products">
+        <section class="products" id="productos">
             <h2 class="products__title">Novedades Exóticas</h2>
             <p class="products__text">Lo último en tecnología para terrarios, iluminación especializada y accesorios premium recién llegados a nuestro inventario.</p>
 
+            <!-- Filtros por categoría -->
+            <div class="filters" role="group" aria-label="Filtrar por categoría">
+                <button class="filters__button" type="button" data-filtro="todos" aria-pressed="true">Todos</button>
+                <button class="filters__button" type="button" data-filtro="terrarios" aria-pressed="false">Terrarios</button>
+                <button class="filters__button" type="button" data-filtro="iluminacion" aria-pressed="false">Iluminación</button>
+                <button class="filters__button" type="button" data-filtro="alimento" aria-pressed="false">Alimento</button>
+                <button class="filters__button" type="button" data-filtro="accesorios" aria-pressed="false">Accesorios</button>
+                <button class="filters__button" type="button" data-filtro="reptiles" aria-pressed="false">Reptiles</button>
+            </div>
+            <p class="products__count" aria-live="polite">Mostrando 6 productos</p>
+
             <!-- Estructura productos-->
             <div class="products__grid">
-            <article class="product-card" data-id="terrario-vidrio" data-nombre="Terrario Profesional de Vidrio v2" data-precio="99.99" data-imagen="img/products/glass-terrarium.png">
-                <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
-                <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
-                <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
-                <span class="product-card__price">$99.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="terrario-vidrio" data-nombre="Terrario Profesional de Vidrio v2" data-precio="99.99" data-imagen="img/products/glass-terrarium.png" data-categoria="terrarios">
+                    <div class="product-card__media">
+                        <span class="badge badge--top">Más vendido</span>
+                        <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario de vidrio con puertas frontales y tapa de malla">
+                    </div>
+                    <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
+                    <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
+                    <span class="product-card__price">$99.99</span>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
 
-            <article class="product-card" data-id="alimento-vivo" data-nombre="Alimento Vivo Premium" data-precio="29.99" data-imagen="img/products/live-crickets-mealworms.png">
-                <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
-                <h3 class="product-card__title">Alimento Vivo Premium</h3>
-                <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
-                <span class="product-card__price">$29.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="alimento-vivo" data-nombre="Alimento Vivo Premium" data-precio="29.99" data-imagen="img/products/live-crickets-mealworms.png" data-categoria="alimento">
+                    <div class="product-card__media">
+                        <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Dos recipientes con grillos y gusanos de harina vivos">
+                    </div>
+                    <h3 class="product-card__title">Alimento Vivo Premium</h3>
+                    <p class="product-card__text">Grillos y gusanos de harina criados para alimentar a tu reptil.</p>
+                    <span class="product-card__price">$29.99</span>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
 
-            <article class="product-card" data-id="lampara-uvb" data-nombre="Lámpara UVB de Alta Potencia" data-precio="49.99" data-imagen="img/products/uvb-dome-lamp.png">
-                <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
-                <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
-                <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
-                <span class="product-card__price">$49.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="lampara-uvb" data-nombre="Lámpara UVB de Alta Potencia" data-precio="49.99" data-imagen="img/products/uvb-dome-lamp.png" data-categoria="iluminacion">
+                    <div class="product-card__media">
+                        <span class="badge badge--oferta">Oferta</span>
+                        <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara de domo negra con foco para terrario">
+                    </div>
+                    <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
+                    <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
+                    <div class="product-card__prices">
+                        <span class="product-card__price">$49.99</span>
+                        <del class="product-card__old-price">$59.99</del>
+                    </div>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
 
-            <article class="product-card" data-id="terrario-vidrio" data-nombre="Terrario Profesional de Vidrio v2" data-precio="99.99" data-imagen="img/products/glass-terrarium.png">
-                <img class="product-card__image" src="img/products/glass-terrarium.png" alt="Terrario Profesional de Vidrio v2">
-                <h3 class="product-card__title">Terrario Profesional de Vidrio v2</h3>
-                <p class="product-card__text">Ventilación óptima y cierre de seguridad anti-escapes.</p>
-                <span class="product-card__price">$99.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="piton-bola" data-nombre="Pitón Bola" data-precio="189.99" data-imagen="img/products/ball-python.png" data-categoria="reptiles">
+                    <div class="product-card__media">
+                        <span class="badge badge--nuevo">Nuevo</span>
+                        <img class="product-card__image" src="img/products/ball-python.png" alt="Pitón bola enroscada con manchas cafés y doradas">
+                    </div>
+                    <h3 class="product-card__title">Pitón Bola</h3>
+                    <p class="product-card__text">Ejemplar criado en cautiverio, tranquilo e ideal para principiantes.</p>
+                    <span class="product-card__price">$189.99</span>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
 
-            <article class="product-card" data-id="alimento-vivo" data-nombre="Alimento Vivo Premium" data-precio="29.99" data-imagen="img/products/live-crickets-mealworms.png">
-                <img class="product-card__image" src="img/products/live-crickets-mealworms.png" alt="Alimento Vivo Premium">
-                <h3 class="product-card__title">Alimento Vivo Premium</h3>
-                <p class="product-card__text">Insectos y roedores de la más alta calidad para tu reptil.</p>
-                <span class="product-card__price">$29.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="gecko-leopardo" data-nombre="Gecko Leopardo" data-precio="119.99" data-imagen="img/products/leopard-gecko.png" data-categoria="reptiles" data-agotado="true">
+                    <div class="product-card__media">
+                        <span class="badge badge--agotado">Agotado</span>
+                        <img class="product-card__image" src="img/products/leopard-gecko.png" alt="Gecko leopardo amarillo con manchas negras sobre una piedra">
+                    </div>
+                    <h3 class="product-card__title">Gecko Leopardo</h3>
+                    <p class="product-card__text">Ejemplar criado en cautiverio, dócil y de fácil manejo.</p>
+                    <span class="product-card__price">$119.99</span>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
 
-            <article class="product-card" data-id="lampara-uvb" data-nombre="Lámpara UVB de Alta Potencia" data-precio="49.99" data-imagen="img/products/uvb-dome-lamp.png">
-                <img class="product-card__image" src="img/products/uvb-dome-lamp.png" alt="Lámpara UVB de Alta Potencia">
-                <h3 class="product-card__title">Lámpara UVB de Alta Potencia</h3>
-                <p class="product-card__text">Proporciona la luz necesaria para la salud de tu reptil.</p>
-                <span class="product-card__price">$49.99</span>
-                <button class="product-card__button">Añadir al carrito</button>
-            </article>
+                <article class="product-card" data-id="sustrato-coco" data-nombre="Sustrato de Fibra de Coco" data-precio="14.99" data-imagen="img/products/coco-fiber-substrate.png" data-categoria="accesorios">
+                    <div class="product-card__media">
+                        <img class="product-card__image" src="img/products/coco-fiber-substrate.png" alt="Bloque comprimido de fibra de coco junto a fibra suelta">
+                    </div>
+                    <h3 class="product-card__title">Sustrato de Fibra de Coco</h3>
+                    <p class="product-card__text">Bloque comprimido que mantiene la humedad del terrario.</p>
+                    <span class="product-card__price">$14.99</span>
+                    <button class="product-card__button" type="button">Añadir al carrito</button>
+                </article>
+            </div>
+        </section>
+
+        <!-- Preguntas frecuentes -->
+        <section class="faq" id="faq">
+            <h2 class="faq__title">Preguntas frecuentes</h2>
+            <div class="faq__list">
+                <details class="faq__item">
+                    <summary class="faq__question">¿Hacen envíos de alimento vivo?</summary>
+                    <p class="faq__answer">Sí, a todo México por paquetería exprés y en empaque ventilado. Si hace mucho calor o frío podemos mover la fecha de envío para que los insectos lleguen en buen estado.</p>
+                </details>
+                <details class="faq__item">
+                    <summary class="faq__question">¿Qué terrario necesito para un gecko leopardo?</summary>
+                    <p class="faq__answer">Para un adulto, un terrario de unos 90 × 45 cm de base es un buen punto de partida. Importa más el espacio de suelo que la altura, con una zona cálida y otra fresca.</p>
+                </details>
+                <details class="faq__item">
+                    <summary class="faq__question">¿Cada cuánto cambio la lámpara UVB?</summary>
+                    <p class="faq__answer">La radiación UVB disminuye aunque la lámpara siga encendiendo. Por lo general se cambia cada 6 a 12 meses; revisa siempre las indicaciones del fabricante.</p>
+                </details>
+                <details class="faq__item">
+                    <summary class="faq__question">¿Puedo devolver un producto?</summary>
+                    <p class="faq__answer">Tienes 30 días para devolver accesorios sin usar y en su empaque original. El alimento vivo y los ejemplares no tienen devolución; si llegan con algún problema, escríbenos en las primeras 24 horas.</p>
+                </details>
+                <details class="faq__item">
+                    <summary class="faq__question">¿Me ayudan a elegir?</summary>
+                    <p class="faq__answer">Claro. Cuéntanos la especie y la edad de tu reptil y te recomendamos el equipo adecuado. Para temas de salud, consulta siempre a un veterinario especialista en exóticos.</p>
+                </details>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <img class="footer__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Reptilianos">
+        <img class="footer__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Repko">
         <nav class="footer__nav" aria-label="Enlaces del sitio">
             <a class="footer__link" href="#">Ayuda</a>
             <a class="footer__link" href="#">Envíos</a>
             <a class="footer__link" href="#">Devoluciones</a>
             <a class="footer__link" href="#">Contacto</a>
         </nav>
-        <p class="footer__text">© 2026 Reptilianos. Todos los derechos reservados.</p>
+        <p class="footer__text">© 2026 Repko. Todos los derechos reservados.</p>
     </footer>
 
     <div class="cart-overlay"></div>
+
+    <aside class="menu" id="menu" aria-label="Menú principal">
+        <div class="menu__header">
+            <h2 class="menu__title">Menú</h2>
+            <button class="menu__close" type="button" aria-label="Cerrar menú">×</button>
+        </div>
+
+        <nav class="menu__nav" aria-label="Secciones de la tienda">
+            <p class="menu__label">Categorías</p>
+            <a class="menu__link" href="#productos" data-filtro="todos">Todos los productos</a>
+            <a class="menu__link" href="#productos" data-filtro="terrarios">Terrarios</a>
+            <a class="menu__link" href="#productos" data-filtro="iluminacion">Iluminación</a>
+            <a class="menu__link" href="#productos" data-filtro="alimento">Alimento</a>
+            <a class="menu__link" href="#productos" data-filtro="accesorios">Accesorios</a>
+            <a class="menu__link" href="#productos" data-filtro="reptiles">Reptiles</a>
+
+            <p class="menu__label">Ayuda</p>
+            <a class="menu__link" href="#faq">Preguntas frecuentes</a>
+        </nav>
+    </aside>
 
     <aside class="cart" id="carrito" aria-label="Carrito de compras">
         <div class="cart__header">

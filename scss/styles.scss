@@ -6,6 +6,15 @@ $blanco: #ffffff;
 $texto: #1d1d1f;
 $texto-suave: #6e6e73;
 $borde: #e5e5ea;
+$oferta: #c2410c;
+
+// Colores de las etiquetas de producto
+$badges: (
+    nuevo: $verde-claro,
+    top: $texto,
+    oferta: $oferta,
+    agotado: $texto-suave
+);
 
 $fuente: 'Nunito', sans-serif;
 $radio: 22px;
@@ -42,6 +51,37 @@ $bp-movil: 480px;
     gap: $gap;
 }
 
+// Panel lateral (carrito a la derecha, menú a la izquierda)
+@mixin side-panel($lado){
+    position: fixed;
+    top: 68px;
+    bottom: 0;
+    #{$lado}: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: $blanco;
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s 0.3s;
+
+    @if $lado == right{
+        box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+        transform: translateX(100%);
+    } @else {
+        box-shadow: 19px -1px 22px -15px rgba(0, 0, 0, 0.30);
+        transform: translateX(-100%);
+    }
+
+    &--open{
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 0.3s ease, visibility 0s;
+    }
+}
+
 /* ===== Estilos generales ===== */
 *{
     margin: 0;
@@ -66,6 +106,12 @@ button{
     font: inherit;
     border: none;
     cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference){
+    html{
+        scroll-behavior: smooth;
+    }
 }
 
 // ===== Placeholders =====
@@ -96,6 +142,37 @@ button{
 
     &:active{
         transform: scale(0.97);
+    }
+
+    &:disabled{
+        background-color: $borde;
+        color: $texto-suave;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+// Título de los paneles laterales
+%panel-title{
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: $verde;
+}
+
+// Botón × de los paneles laterales
+%panel-close{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    color: $texto;
+    font-size: 26px;
+    line-height: 1;
+    transition: background-color 0.2s;
+
+    &:hover{
+        background-color: $fondo;
     }
 }
 
@@ -182,6 +259,65 @@ button{
         font-size: 20px;
         opacity: 0.9;
     }
+
+    &__button{
+        display: inline-block;
+        margin-top: 28px;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $verde;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 0.2s, transform 0.1s;
+
+        &:hover{
+            background-color: $fondo;
+        }
+
+        &:active{
+            transform: scale(0.97);
+        }
+    }
+}
+
+/* ===== Beneficios ===== */
+.benefits{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+
+    &__list{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        list-style: none;
+    }
+
+    &__item{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 12px;
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    &__icon{
+        width: 32px;
+        height: 32px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        color: $verde;
+    }
 }
 
 /* ===== Productos ===== */
@@ -190,6 +326,7 @@ button{
     margin: 0 auto;
     padding: 72px 24px;
     text-align: center;
+    scroll-margin-top: 68px;
 
     &__title{
         @extend %title;
@@ -203,10 +340,66 @@ button{
         color: $texto-suave;
     }
 
+    &__count{
+        margin-bottom: 24px;
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
     &__grid{
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 24px;
+    }
+}
+
+/* ===== Filtros ===== */
+.filters{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    &__button{
+        flex-shrink: 0;
+        padding: 8px 18px;
+        border: 1px solid $borde;
+        border-radius: 999px;
+        background-color: $blanco;
+        color: $texto;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+
+        &:hover{
+            border-color: $verde-claro;
+        }
+
+        &[aria-pressed="true"]{
+            border-color: $verde;
+            background-color: $verde;
+            color: $blanco;
+        }
+    }
+}
+
+/* ===== Etiquetas ===== */
+.badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: $blanco;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+@each $nombre, $color in $badges{
+    .badge--#{$nombre}{
+        background-color: $color;
     }
 }
 
@@ -224,6 +417,19 @@ button{
     &:hover{
         transform: translateY(-4px);
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    &[hidden]{
+        display: none;
+    }
+
+    &--agotado &__image{
+        opacity: 0.55;
+        filter: grayscale(40%);
+    }
+
+    &__media{
+        position: relative;
     }
 
     &__image{
@@ -249,6 +455,17 @@ button{
         font-size: 20px;
     }
 
+    &__prices{
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    &__old-price{
+        font-size: 14px;
+        color: $texto-suave;
+    }
+
     &__button{
         @extend %button-pill;
         margin-top: 12px;
@@ -272,27 +489,7 @@ button{
 }
 
 .cart{
-    position: fixed;
-    top: 68px;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    width: 380px;
-    padding: 24px;
-    overflow-y: auto;
-    background-color: $blanco;
-    box-shadow: -19px -1px 22px -15px rgba(0, 0, 0, 0.30);
-    transform: translateX(100%);
-    visibility: hidden;
-    transition: transform 0.3s ease, visibility 0s 0.3s;
-
-    &--open{
-        transform: translateX(0);
-        visibility: visible;
-        transition: transform 0.3s ease, visibility 0s;
-    }
+    @include side-panel(right);
 
     &__header{
         @include flex-between;
@@ -300,25 +497,11 @@ button{
     }
 
     &__title{
-        font-size: 20px;
-        font-weight: 600;
-        letter-spacing: -0.02em;
-        color: $verde;
+        @extend %panel-title;
     }
 
     &__close{
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: transparent;
-        color: $texto;
-        font-size: 26px;
-        line-height: 1;
-        transition: background-color 0.2s;
-
-        &:hover{
-            background-color: $fondo;
-        }
+        @extend %panel-close;
     }
 
     &__shipping{
@@ -459,13 +642,108 @@ button{
     &__checkout{
         @extend %button-pill;
         width: 100%;
+    }
+}
 
-        &:disabled{
-            background-color: $borde;
-            color: $texto-suave;
-            cursor: not-allowed;
-            transform: none;
+/* ===== Menu ===== */
+.menu{
+    @include side-panel(left);
+
+    &__header{
+        @include flex-between;
+        margin-bottom: 8px;
+    }
+
+    &__title{
+        @extend %panel-title;
+    }
+
+    &__close{
+        @extend %panel-close;
+    }
+
+    &__label{
+        margin: 20px 0 4px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $texto-suave;
+    }
+
+    &__link{
+        display: block;
+        padding: 14px 4px;
+        border-bottom: 1px solid $borde;
+        color: $texto;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+
+        &:hover{
+            color: $verde-claro;
         }
+    }
+}
+
+/* ===== Preguntas frecuentes ===== */
+.faq{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 72px;
+    scroll-margin-top: 68px;
+
+    &__title{
+        @extend %title;
+        margin-bottom: 24px;
+        font-size: 32px;
+        color: $verde;
+        text-align: center;
+    }
+
+    &__list{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__item{
+        border-radius: $radio;
+        background-color: $blanco;
+        box-shadow: $sombra;
+
+        &[open] .faq__question::after{
+            transform: rotate(45deg);
+        }
+    }
+
+    &__question{
+        @include flex-between;
+        gap: 16px;
+        padding: 20px 24px;
+        font-weight: 700;
+        list-style: none;
+        cursor: pointer;
+
+        &::-webkit-details-marker{
+            display: none;
+        }
+
+        &::after{
+            content: "+";
+            flex-shrink: 0;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1;
+            color: $verde;
+            transition: transform 0.2s;
+        }
+    }
+
+    &__answer{
+        padding: 0 24px 20px;
+        color: $texto-suave;
+        line-height: 1.5;
     }
 }
 
@@ -567,8 +845,17 @@ button{
         }
     }
 
-    .cart{
+    .benefits__list{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cart,
+    .menu{
         top: 66px;
+    }
+
+    .faq__title{
+        font-size: 28px;
     }
 }
 
@@ -597,24 +884,81 @@ button{
         }
     }
 
+    .benefits{
+        padding: 24px 10px 0;
+
+        &__list{
+            gap: 10px;
+        }
+
+        &__item{
+            gap: 6px;
+            padding: 14px 8px;
+            font-size: 13px;
+        }
+
+        &__icon{
+            width: 26px;
+            height: 26px;
+        }
+    }
+
+    .filters{
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar{
+            display: none;
+        }
+    }
+
     .product-card{
         text-align: center;
 
-        &__image{
+        &__media{
+            width: 100%;
             max-width: 200px;
-            margin: 0 auto 10px;
+            margin: 0 auto;
+        }
+
+        &__image{
+            margin-bottom: 10px;
         }
 
         &__title,
         &__text{
             padding: 0 10px;
         }
+
+        &__prices{
+            justify-content: center;
+        }
     }
 
-    .cart{
+    .cart,
+    .menu{
         width: 100%;
         padding: 20px 16px;
         box-shadow: none;
+    }
+
+    .faq{
+        padding: 0 10px 40px;
+
+        &__title{
+            font-size: 24px;
+        }
+
+        &__question{
+            padding: 16px 18px;
+        }
+
+        &__answer{
+            padding: 0 18px 16px;
+        }
     }
 
     .toast{
