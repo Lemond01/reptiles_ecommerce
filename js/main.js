@@ -29,9 +29,11 @@ const menuPanel = document.getElementById('menu');
 const botonCerrarMenu = document.querySelector('.menu__close');
 const enlacesMenu = document.querySelectorAll('.menu__link');
 
-// Filtros
+// Filtros y buscador
 const botonesFiltro = document.querySelectorAll('.filters__button');
 const textoConteo = document.querySelector('.products__count');
+const buscador = document.getElementById('buscador');
+const textoSinResultados = document.querySelector('.products__empty');
 
 // Ventana de confirmación del pedido
 const ventanaConfirmar = document.getElementById('confirmar-pedido');
@@ -47,8 +49,25 @@ const botonVolver = document.querySelector('.confirm__back');
 const botonConfirmar = document.querySelector('.confirm__submit');
 
 
+// ===== Producto =====
+class Producto {
+    constructor(id, nombre, precio, imagen, categoria, cantidad) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.imagen = imagen;
+        this.categoria = categoria;
+        this.cantidad = cantidad;
+    }
+
+    calcularSubtotal() {
+        return this.precio * this.cantidad;
+    }
+}
+
+
 // ===== Estado =====
-// El carrito es un arreglo de objetos: { id, nombre, precio, imagen, categoria, cantidad }
+// El carrito es un arreglo de objetos Producto
 let carrito = cargarCarrito();
 let temporizadorAviso; // Guarda el setTimeout del aviso para poder reiniciarlo
 
@@ -65,14 +84,59 @@ function formatearPrecio(numero) {
 // Arma un producto del carrito con los datos data-* de una tarjeta
 function datosDeTarjeta(tarjeta, cantidad) {
     const datos = tarjeta.dataset;
-    return {
-        id: datos.id,
-        nombre: datos.nombre,
-        precio: Number(datos.precio),
-        imagen: datos.imagen,
-        categoria: datos.categoria, // Sirve para saber si hay un reptil en el carrito
-        cantidad: cantidad
-    };
+    return new Producto(
+        datos.id,
+        datos.nombre,
+        Number(datos.precio),
+        datos.imagen,
+        datos.categoria, // Sirve para saber si hay un reptil en el carrito
+        cantidad
+    );
+}
+
+function crearElemento(etiqueta, clase, texto) {
+    const elemento = document.createElement(etiqueta);
+    elemento.classList.add(clase);
+    if (texto !== undefined) {
+        elemento.textContent = texto;
+    }
+    return elemento;
+}
+
+function crearBotonIcono(clase, accion, etiqueta, icono, claseIcono) {
+    const boton = crearElemento('button', clase);
+    boton.type = 'button';
+    boton.dataset.accion = accion;
+    boton.setAttribute('aria-label', etiqueta);
+
+    const imagen = crearElemento('img', claseIcono);
+    imagen.src = icono;
+    imagen.alt = '';
+    boton.appendChild(imagen);
+
+    return boton;
+}
+
+function crearItemCarrito(producto) {
+    const item = crearElemento('li', 'cart__item');
+    item.dataset.id = producto.id;
+
+    const imagen = crearElemento('img', 'cart__image');
+    imagen.src = producto.imagen;
+    imagen.alt = '';
+
+    const controlCantidad = crearElemento('div', 'cart__qty');
+    controlCantidad.appendChild(crearBotonIcono('cart__qty-button', 'restar', 'Quitar uno de ' + producto.nombre, 'img/icons/minus.svg', 'cart__qty-icon'));
+    controlCantidad.appendChild(crearElemento('span', 'cart__qty-number', producto.cantidad));
+    controlCantidad.appendChild(crearBotonIcono('cart__qty-button', 'sumar', 'Añadir uno de ' + producto.nombre, 'img/icons/plus.svg', 'cart__qty-icon'));
+
+    item.appendChild(imagen);
+    item.appendChild(crearElemento('p', 'cart__name', producto.nombre));
+    item.appendChild(controlCantidad);
+    item.appendChild(crearElemento('p', 'cart__price', formatearPrecio(producto.calcularSubtotal())));
+    item.appendChild(crearBotonIcono('cart__delete', 'borrar', 'Eliminar ' + producto.nombre, 'img/icons/trash.svg', 'cart__delete-icon'));
+
+    return item;
 }
 
 
@@ -353,24 +417,47 @@ botonConfirmar.addEventListener('click', function () {
 });
 
 
-// ===== Filtros =====
-// Muestra solo las tarjetas de la categoría elegida ('todos' las muestra todas)
-function aplicarFiltro(categoria) {
+// ===== Filtros y buscador =====
+let categoriaActiva = 'todos';
+
+// Pasa a minúsculas y quita los acentos: "Lámpara" -> "lampara"
+function normalizarTexto(texto) {
+    return texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+}
+
+// Muestra solo las tarjetas que coinciden con la categoría Y con lo que se escribió en el buscador
+function mostrarProductos() {
+    const busqueda = normalizarTexto(buscador.value);
     let visibles = 0;
 
     tarjetas.forEach(function (tarjeta) {
-        const coincide = categoria === 'todos' || tarjeta.dataset.categoria === categoria;
-        tarjeta.hidden = !coincide; // El atributo hidden oculta la tarjeta
-        if (coincide) visibles++;
+        const coincideCategoria = categoriaActiva === 'todos' || tarjeta.dataset.categoria === categoriaActiva;
+        const textoTarjeta = normalizarTexto(tarjeta.dataset.nombre + ' ' + tarjeta.querySelector('.product-card__text').textContent);
+        const coincideBusqueda = textoTarjeta.includes(busqueda);
+
+        const mostrar = coincideCategoria && coincideBusqueda;
+        tarjeta.hidden = !mostrar; // El atributo hidden oculta la tarjeta
+        if (mostrar) visibles++;
     });
+
+    textoConteo.textContent = 'Mostrando ' + visibles + (visibles === 1 ? ' producto' : ' productos');
+    textoSinResultados.hidden = visibles > 0;
+}
+
+// Cambia la categoría activa ('todos' las muestra todas)
+function aplicarFiltro(categoria) {
+    categoriaActiva = categoria;
 
     // Marcamos como presionado solo el botón del filtro activo
     botonesFiltro.forEach(function (boton) {
         boton.setAttribute('aria-pressed', boton.dataset.filtro === categoria);
     });
 
-    textoConteo.textContent = 'Mostrando ' + visibles + (visibles === 1 ? ' producto' : ' productos');
+    mostrarProductos();
 }
+
+// "input" se dispara con cada cambio del campo: al escribir, borrar, pegar o pulsar la × del buscador
+buscador.addEventListener('input', mostrarProductos);
 
 botonesFiltro.forEach(function (boton) {
     boton.addEventListener('click', function () {
@@ -397,7 +484,7 @@ function calcularTotales() {
     let subtotal = 0;
     let piezas = 0;
     carrito.forEach(function (producto) {
-        subtotal += producto.precio * producto.cantidad;
+        subtotal += producto.calcularSubtotal();
         piezas += producto.cantidad;
     });
 
@@ -420,26 +507,15 @@ function calcularTotales() {
 // Dibuja la lista, calcula totales, contador y barra de envío, y guarda el carrito
 function actualizar() {
     // 1. Dibujar la lista de productos
-    lista.innerHTML = carrito.map(function (producto) {
-        return `
-            <li class="cart__item" data-id="${producto.id}">
-                <img class="cart__image" src="${producto.imagen}" alt="">
-                <p class="cart__name">${producto.nombre}</p>
-                <div class="cart__qty">
-                    <button class="cart__qty-button" type="button" data-accion="restar" aria-label="Quitar uno de ${producto.nombre}">
-                        <img class="cart__qty-icon" src="img/icons/minus.svg" alt="">
-                    </button>
-                    <span class="cart__qty-number">${producto.cantidad}</span>
-                    <button class="cart__qty-button" type="button" data-accion="sumar" aria-label="Añadir uno de ${producto.nombre}">
-                        <img class="cart__qty-icon" src="img/icons/plus.svg" alt="">
-                    </button>
-                </div>
-                <p class="cart__price">${formatearPrecio(producto.precio * producto.cantidad)}</p>
-                <button class="cart__delete" type="button" data-accion="borrar" aria-label="Eliminar ${producto.nombre}">
-                    <img class="cart__delete-icon" src="img/icons/trash.svg" alt="">
-                </button>
-            </li>`;
-    }).join('');
+    while (lista.firstChild) {
+        lista.removeChild(lista.firstChild);
+    }
+
+    const fragmento = document.createDocumentFragment();
+    carrito.forEach(function (producto) {
+        fragmento.appendChild(crearItemCarrito(producto));
+    });
+    lista.appendChild(fragmento);
 
     // 2. Subtotal, envío y total
     const totales = calcularTotales();
