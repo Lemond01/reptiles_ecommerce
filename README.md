@@ -4,6 +4,9 @@ Repko es una tienda en línea de reptiles y todo lo que necesitan: terrarios, l�
 
 > **Ojo:** es una tienda ficticia. No vende nada de verdad, no cobra y los datos de la empresa son de ejemplo.
 
+- 🌐 **Ver la página en línea:** https://lemond01.github.io/reptiles_ecommerce/
+- 📁 **Repositorio:** https://github.com/Lemond01/reptiles_ecommerce
+
 ![Página de inicio de Repko](img/readme/01-inicio.jpg)
 
 ## ¿Qué puedes hacer en la página?
@@ -49,10 +52,35 @@ Una página aparte con todas las políticas de la tienda y un índice para salta
 
 ## ¿Cómo la veo?
 
+La forma más fácil es abrir el [enlace de la página en línea](https://lemond01.github.io/reptiles_ecommerce/).
+
+Si prefieres verla en tu computadora:
+
 1. Descarga o clona este repositorio.
 2. Abre el archivo `index.html` en tu navegador.
 
 ¡Y listo! No hace falta instalar nada. La página también se adapta a tablet y celular.
+
+## ¿Quieres cambiar los estilos?
+
+Los estilos se escriben en `scss/styles.scss` y se convierten en `css/styles.css`, que es el archivo que usa la página. No edites `css/styles.css` a mano: se vuelve a crear cada vez que compilas.
+
+Puedes compilar de dos formas:
+
+- **Con Visual Studio Code:** instala la extensión **Live Sass Compiler** y pulsa **Watch Sass** en la barra de abajo. Configúrala para que guarde el resultado en la carpeta `css/`.
+- **Desde la terminal:** necesitas tener [Node.js](https://nodejs.org/) instalado. Instala Sass una sola vez:
+
+  ```
+  npm install -g sass
+  ```
+
+  Y después, desde la carpeta del proyecto:
+
+  ```
+  sass --watch --no-source-map scss/styles.scss css/styles.css
+  ```
+
+  Con `--watch`, el CSS se actualiza solo cada vez que guardas el archivo `.scss`. Para detenerlo, pulsa `Ctrl + C`.
 
 ## ¿Con qué está hecha?
 

@@ -20,6 +20,7 @@ const envioTexto = document.querySelector('.cart__shipping-cost');
 const totalTexto = document.querySelector('.cart__total-price');
 const botonFinalizar = document.querySelector('.cart__checkout');
 const aviso = document.querySelector('.toast');
+const barraAlmacenamiento = document.querySelector('.storage-notice');
 const botonesAnadir = document.querySelectorAll('.product-card__button');
 const tarjetas = document.querySelectorAll('.product-card');
 
@@ -281,8 +282,13 @@ document.addEventListener('keydown', function (evento) {
 
 
 // ===== Aviso (toast) =====
-// duracion es opcional: si no se indica, se usa DURACION_AVISO
 function mostrarAviso(mensaje, duracion = DURACION_AVISO) {
+    if (barraAlmacenamiento.hidden) {
+        aviso.style.bottom = '';
+    } else {
+        aviso.style.bottom = (barraAlmacenamiento.offsetHeight + 32) + 'px';
+    }
+
     aviso.textContent = mensaje;
     aviso.classList.add('toast--visible');
 
