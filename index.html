@@ -70,6 +70,15 @@
             <h2 class="products__title">Novedades Exóticas</h2>
             <p class="products__text">Lo último en tecnología para terrarios, iluminación especializada y accesorios premium recién llegados a nuestro inventario.</p>
 
+            <!-- Buscador -->
+            <div class="search">
+                <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M20 20l-4-4"/>
+                </svg>
+                <input class="search__input" type="search" id="buscador" placeholder="Buscar productos..." aria-label="Buscar productos" autocomplete="off">
+            </div>
+
             <!-- Filtros por categoría -->
             <div class="filters" role="group" aria-label="Filtrar por categoría">
                 <button class="filters__button" type="button" data-filtro="todos" aria-pressed="true">Todos</button>
@@ -152,6 +161,7 @@
                     <button class="product-card__button" type="button">Añadir al carrito</button>
                 </article>
             </div>
+            <p class="products__empty" hidden>No encontramos productos con esa búsqueda.</p>
         </section>
 
         <!-- Preguntas frecuentes -->
