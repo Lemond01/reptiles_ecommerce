@@ -23,6 +23,10 @@ const aviso = document.querySelector('.toast');
 const barraAlmacenamiento = document.querySelector('.storage-notice');
 const botonesAnadir = document.querySelectorAll('.product-card__button');
 const tarjetas = document.querySelectorAll('.product-card');
+const anuncioCarrito = document.getElementById('anuncio-carrito');
+const contenidoPrincipal = document.querySelector('main');
+const piePagina = document.querySelector('footer');
+const enlaceSaltar = document.querySelector('.skip-link');
 
 // Menú lateral
 const botonMenu = document.getElementById('boton-menu');
@@ -46,6 +50,8 @@ const casillaTerminos = document.getElementById('casilla-terminos');
 const bloqueReptiles = document.getElementById('bloque-reptiles');
 const casillaReptiles = document.getElementById('casilla-reptiles');
 const casillaPromociones = document.getElementById('casilla-promociones');
+const errorTerminos = document.getElementById('error-terminos');
+const errorReptiles = document.getElementById('error-reptiles');
 const botonVolver = document.querySelector('.confirm__back');
 const botonConfirmar = document.querySelector('.confirm__submit');
 
@@ -174,6 +180,14 @@ function guardarCarrito() {
 }
 
 
+// ===== Fondo inerte =====
+function bloquearFondo(bloquear) {
+    contenidoPrincipal.inert = bloquear;
+    piePagina.inert = bloquear;
+    enlaceSaltar.inert = bloquear;
+}
+
+
 // ===== Abrir y cerrar el carrito =====
 function carritoAbierto() {
     return carritoPanel.classList.contains('cart--open');
@@ -184,6 +198,7 @@ function abrirCarrito() {
     carritoPanel.classList.add('cart--open');
     fondo.classList.add('cart-overlay--visible');
     botonCarrito.setAttribute('aria-expanded', 'true');
+    bloquearFondo(true);
     botonCerrar.focus(); // El foco pasa al botón ×
 }
 
@@ -194,6 +209,7 @@ function cerrarCarrito() {
     carritoPanel.classList.remove('cart--open');
     fondo.classList.remove('cart-overlay--visible');
     botonCarrito.setAttribute('aria-expanded', 'false');
+    bloquearFondo(false);
 
     if (focoDentro) {
         botonCarrito.focus();
@@ -221,6 +237,7 @@ function abrirMenu() {
     menuPanel.classList.add('menu--open');
     fondo.classList.add('cart-overlay--visible'); // Reutilizamos el fondo del carrito
     botonMenu.setAttribute('aria-expanded', 'true');
+    bloquearFondo(true);
     botonCerrarMenu.focus();
 }
 
@@ -232,6 +249,7 @@ function cerrarMenu(devolverFoco = true) {
     menuPanel.classList.remove('menu--open');
     fondo.classList.remove('cart-overlay--visible');
     botonMenu.setAttribute('aria-expanded', 'false');
+    bloquearFondo(false);
 
     if (devolverFoco && focoDentro) {
         botonMenu.focus();
@@ -349,13 +367,20 @@ lista.addEventListener('click', function (evento) {
     }
 
     // Si se borra o la cantidad llega a 0, quitamos el producto del arreglo
-    if (accion === 'borrar' || producto.cantidad === 0) {
+    const seElimina = accion === 'borrar' || producto.cantidad === 0;
+    if (seElimina) {
         carrito = carrito.filter(function (item) {
             return item.id !== id;
         });
     }
 
     actualizar();
+
+    if (seElimina) {
+        anuncioCarrito.textContent = producto.nombre + ' se eliminó del carrito';
+    } else {
+        anuncioCarrito.textContent = producto.nombre + ': ' + producto.cantidad + (producto.cantidad === 1 ? ' pieza' : ' piezas');
+    }
 
     // La lista se vuelve a dibujar, así que devolvemos el foco al mismo botón
     // (o al botón × si el producto ya no existe) para quien usa el teclado
@@ -380,20 +405,40 @@ function abrirConfirmacion() {
     });
     bloqueReptiles.hidden = !hayReptiles;
 
-    // 3. Las casillas empiezan desmarcadas cada vez que se abre la ventana
+    // 3. Reiniciar casillas y errores
     casillaTerminos.checked = false;
     casillaReptiles.checked = false;
     casillaPromociones.checked = false;
-    revisarCasillas();
+    mostrarError(casillaTerminos, errorTerminos, false);
+    mostrarError(casillaReptiles, errorReptiles, false);
 
     // 4. showModal() la abre encima de todo, con fondo oscuro (::backdrop)
     ventanaConfirmar.showModal();
 }
 
-// "Confirmar pedido" solo se habilita si están marcadas las casillas obligatorias
-function revisarCasillas() {
-    const reptilesOk = bloqueReptiles.hidden || casillaReptiles.checked;
-    botonConfirmar.disabled = !(casillaTerminos.checked && reptilesOk);
+// Errores
+function mostrarError(casilla, mensajeError, mostrar) {
+    mensajeError.hidden = !mostrar;
+    if (mostrar) {
+        casilla.setAttribute('aria-invalid', 'true');
+        casilla.setAttribute('aria-describedby', mensajeError.id);
+    } else {
+        casilla.removeAttribute('aria-invalid');
+        casilla.removeAttribute('aria-describedby');
+    }
+}
+
+// Validación
+function validarCasillas() {
+    const faltaTerminos = !casillaTerminos.checked;
+    const faltaReptiles = !bloqueReptiles.hidden && !casillaReptiles.checked;
+
+    mostrarError(casillaTerminos, errorTerminos, faltaTerminos);
+    mostrarError(casillaReptiles, errorReptiles, faltaReptiles);
+
+    if (faltaTerminos) return casillaTerminos;
+    if (faltaReptiles) return casillaReptiles;
+    return null;
 }
 
 function guardarPromociones(acepta) {
@@ -406,14 +451,23 @@ function guardarPromociones(acepta) {
 
 botonFinalizar.addEventListener('click', abrirConfirmacion);
 
-// Cada vez que se marca o desmarca una casilla, revisamos el botón
-ventanaConfirmar.addEventListener('change', revisarCasillas);
+ventanaConfirmar.addEventListener('change', function () {
+    if (!errorTerminos.hidden || !errorReptiles.hidden) {
+        validarCasillas();
+    }
+});
 
 botonVolver.addEventListener('click', function () {
     ventanaConfirmar.close(); // Regresa al carrito, que sigue abierto
 });
 
 botonConfirmar.addEventListener('click', function () {
+    const primeraConError = validarCasillas();
+    if (primeraConError) {
+        primeraConError.focus();
+        return;
+    }
+
     guardarPromociones(casillaPromociones.checked);
     ventanaConfirmar.close();
     carrito = [];
