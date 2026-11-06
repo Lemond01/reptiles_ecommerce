@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-MX">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,21 @@
     <title>Información legal | Repko</title>
 </head>
 <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+    <div class="storage-notice" role="region" aria-label="Aviso de almacenamiento" hidden>
+        <p class="storage-notice__text">Usamos el almacenamiento de tu navegador para recordar tu carrito y tus preferencias. No usamos cookies de publicidad. <a href="legal.html#privacidad">Ver aviso de privacidad</a></p>
+        <button class="storage-notice__button" type="button">Entendido</button>
+    </div>
+
     <header class="header header--legal">
-        <a class="header__back" href="index.html">← Volver a la tienda</a>
+        <a class="header__back" href="index.html"><span aria-hidden="true">←</span> Volver a la tienda</a>
         <a class="header__home" href="index.html">
             <img class="header__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Repko, ir a la tienda">
         </a>
     </header>
 
-    <main class="legal">
+    <main class="legal" id="contenido">
         <div class="legal__intro">
             <h1 class="legal__title">Información legal</h1>
             <p class="legal__notice"><strong>Proyecto académico.</strong> Repko es una tienda ficticia creada para un curso de EBAC. Todos los datos de la empresa (razón social, RFC, domicilio, teléfonos, correos y registros) son <strong>de ejemplo</strong> y no corresponden a una empresa real. Estos textos son una base de práctica y no sustituyen la revisión de un abogado.</p>
@@ -28,7 +35,7 @@
             <!-- Índice -->
             <nav class="legal__index" aria-label="Índice de la información legal">
                 <p class="legal__index-title">Contenido</p>
-                <ul class="legal__index-list">
+                <ul class="legal__index-list" role="list">
                     <li><a class="legal__index-link" href="#proveedor">Datos del proveedor</a></li>
                     <li><a class="legal__index-link" href="#terminos">Términos y condiciones</a></li>
                     <li><a class="legal__index-link" href="#privacidad">Aviso de privacidad</a></li>
@@ -138,7 +145,7 @@
                     <p>Tratamos tus datos conforme a nuestro <a href="#privacidad"><strong>Aviso de privacidad</strong></a>.</p>
 
                     <h3>1.15 Quejas y aclaraciones</h3>
-                    <p>Escríbenos a <a href="mailto:contacto@repko.example">contacto@repko.example</a> o llámanos al <a href="tel:+525500000000">55 0000 0000</a>. Respondemos en un máximo de 3 días hábiles. Si no quedas satisfecho, puedes acudir a la <strong>Procuraduría Federal del Consumidor (Profeco)</strong>: Teléfono del Consumidor <a href="tel:+525555688722">55 5568 8722</a> o <a href="tel:8004688722">800 468 8722</a>, o en <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener">www.gob.mx/profeco</a>.</p>
+                    <p>Escríbenos a <a href="mailto:contacto@repko.example">contacto@repko.example</a> o llámanos al <a href="tel:+525500000000">55 0000 0000</a>. Respondemos en un máximo de 3 días hábiles. Si no quedas satisfecho, puedes acudir a la <strong>Procuraduría Federal del Consumidor (Profeco)</strong>: Teléfono del Consumidor <a href="tel:+525555688722">55 5568 8722</a> o <a href="tel:8004688722">800 468 8722</a>, o en <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener">www.gob.mx/profeco<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a>.</p>
 
                     <h3>1.16 Cambios a estos términos</h3>
                     <p>Podemos actualizar estos términos. La versión vigente siempre estará publicada en esta página con su fecha de actualización. Los cambios no afectan los pedidos que ya hayas realizado.</p>
@@ -197,7 +204,7 @@
                     <p>Te responderemos dentro de los plazos que establece la ley y te indicaremos cómo se hará efectiva tu solicitud.</p>
 
                     <h3>2.7 Cookies y almacenamiento del navegador</h3>
-                    <p>Este sitio usa el <strong>almacenamiento local de tu navegador (localStorage)</strong> para recordar tu carrito, si ya viste el aviso de almacenamiento y si marcaste la casilla de promociones al comprar. Esa información se queda en tu dispositivo, no nos la envía y puedes borrarla desde la configuración de tu navegador. <strong>No usamos cookies de publicidad.</strong></p>
+                    <p>Este sitio usa el <strong>almacenamiento local de tu navegador (<span lang="en">localStorage</span>)</strong> para recordar tu carrito, si ya viste el aviso de almacenamiento y si marcaste la casilla de promociones al comprar. Esa información se queda en tu dispositivo, no nos la envía y puedes borrarla desde la configuración de tu navegador. <strong>No usamos cookies de publicidad.</strong></p>
                     <p>Para mostrar la tipografía del sitio, tu navegador descarga la fuente Nunito desde los servidores de Google Fonts. Al hacerlo, Google puede recibir datos técnicos de tu conexión, como tu dirección IP y el tipo de navegador.</p>
 
                     <h3>2.8 Cambios a este aviso</h3>
@@ -348,7 +355,7 @@
     </main>
 
     <footer class="footer">
-        <img class="footer__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Logo Repko">
+        <img class="footer__logo" src="img/logos/repko_logo_blanco_transparente.png" alt="Repko">
         <nav class="footer__nav" aria-label="Información legal y ayuda">
             <a class="footer__link" href="legal.html#terminos">Términos</a>
             <a class="footer__link" href="legal.html#privacidad">Privacidad</a>
@@ -361,14 +368,9 @@
         <p class="footer__text">© 2026 Repko. Todos los derechos reservados.</p>
         <div class="footer__legal">
             <p>Repko Exóticos, S.A. de C.V. · RFC REX260101AB1 · Av. Ejemplo 123, Col. Centro, C.P. 06000, CDMX · <a href="tel:+525500000000">55 0000 0000</a> · <a href="mailto:contacto@repko.example">contacto@repko.example</a></p>
-            <p>Proyecto académico: Repko es una tienda ficticia y no realiza ventas reales. · <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener">Profeco</a></p>
+            <p>Proyecto académico: Repko es una tienda ficticia y no realiza ventas reales. · <a href="https://www.gob.mx/profeco" target="_blank" rel="noopener">Profeco<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a></p>
         </div>
     </footer>
-
-    <div class="storage-notice" role="region" aria-label="Aviso de almacenamiento" hidden>
-        <p class="storage-notice__text">Usamos el almacenamiento de tu navegador para recordar tu carrito y tus preferencias. No usamos cookies de publicidad. <a href="legal.html#privacidad">Ver aviso de privacidad</a></p>
-        <button class="storage-notice__button" type="button">Entendido</button>
-    </div>
 
     <script src="js/avisos.js"></script>
 </body>
